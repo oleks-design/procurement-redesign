@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software Request — HubSpot · Procurement</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F8F7F4;
+    --surface: #FFFFFF;
+    --surface-2: #F1F0EA;
+    --surface-3: #E8E7E0;
+    --border: rgba(0,0,0,0.06);
+    --border-strong: rgba(0,0,0,0.12);
+    --text-primary: #1A1916;
+    --text-secondary: #52514A;
+    --text-tertiary: #757470; /* Darkened for A11y */
+    --text-inverse: #FFFFFF;
+    --green: #166534;
+    --green-light: #DCFCE7;
+    --green-mid: #22C55E;
+    --blue: #1E40AF;
+    --blue-light: #EFF6FF;
+    --blue-mid: #3B82F6;
+    --amber: #92400E;
+    --amber-light: #FFFBEB;
+    --amber-mid: #F59E0B;
+    --red: #991B1B;
+    --red-light: #FEF2F2;
+    --nav-w: 240px;
+    --header-h: 64px;
+    --radius: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: var(--nav-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border-strong);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 12px;
+  }
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: var(--text-primary);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-text { font-size: 16px; font-weight: 600; letter-spacing: -.4px; }
+
+  .sidebar-nav { padding: 16px 12px; flex: 1; }
+  .nav-section-label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: .05em; text-transform: uppercase;
+    color: var(--text-tertiary);
+    padding: 12px 12px 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .2s;
+  }
+  .nav-item:hover { background: var(--surface-2); color: var(--text-primary); }
+  .nav-item.active { background: var(--surface-2); color: var(--text-primary); font-weight: 500; }
+  .nav-item svg { width: 18px; height: 18px; opacity: 0.6; }
+
+  /* ── Main ── */
+  .main { margin-left: var(--nav-w); flex: 1; display: flex; flex-direction: column; }
+
+  .topbar {
+    height: var(--header-h);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    position: sticky; top: 0; z-index: 50;
+  }
+
+  .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .breadcrumb a { color: var(--text-tertiary); text-decoration: none; }
+  .breadcrumb-sep { color: var(--text-tertiary); }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500;
+    padding: 4px 10px; border-radius: 20px;
+    background: var(--amber-light); color: var(--amber);
+    border: 1px solid rgba(146, 64, 14, 0.1);
+    margin-left: 12px;
+  }
+
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .btn {
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    padding: 8px 16px; border-radius: 8px;
+    cursor: pointer; border: 1px solid var(--border-strong);
+    background: var(--surface); transition: transform 0.1s;
+  }
+  .btn-primary { background: var(--text-primary); color: #fff; border: none; }
+  .btn-ghost { border: none; color: var(--text-tertiary); }
+
+  /* ── Content ── */
+  .content {
+    padding: 32px;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    max-width: 1300px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  /* ── Hero Improvements ── */
+  .hero-vendor {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px;
+  }
+  .vendor-logo {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: #FF7A59; display: flex; align-items: center; justify-content: center;
+  }
+  .vendor-logo svg { fill: white; width: 24px; }
+  .cost-value { font-family: 'DM Mono', monospace; font-size: 32px; letter-spacing: -1px; font-weight: 600; }
+  .cost-trend {
+    font-size: 11px; color: var(--green); background: var(--green-light);
+    padding: 2px 8px; border-radius: 4px; font-weight: 600; display: inline-block;
+  }
+
+  .stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--surface); border-top: 1px solid var(--border); }
+  .stat { padding: 20px; position: relative; }
+  .stat:not(:last-child)::after {
+    content: ""; position: absolute; right: 0; top: 25%; height: 50%; width: 1px; background: var(--border-strong);
+  }
+  .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-tertiary); font-weight: 600; }
+  .stat-value { font-size: 14px; font-weight: 500; margin-top: 2px; }
+
+  /* ── Action Zone Re-design ── */
+  .action-zone {
+    margin: 16px; padding: 20px;
+    background: #fff;
+    border: 1px solid var(--blue-mid);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1);
+  }
+  .az-label { font-size: 11px; font-weight: 700; color: var(--blue); text-transform: uppercase; margin-bottom: 8px; }
+  .az-btns { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .az-btn { 
+    width: 100%; padding: 10px; border-radius: 8px; font-weight: 600; border: 1px solid transparent; cursor: pointer;
+    font-family: inherit; font-size: 13px;
+  }
+  .az-approve { background: var(--blue); color: #fff; }
+  .az-reject { background: var(--red-light); color: var(--red); }
+
+  /* ── Timeline ── */
+  .timeline { padding: 16px 0; }
+  .tl-step { display: flex; padding: 0 20px; margin-bottom: -1px; }
+  .tl-icon-col { width: 32px; display: flex; flex-direction: column; align-items: center; }
+  .tl-line { width: 2px; flex: 1; background: var(--surface-3); }
+  .tl-line.active { background: var(--blue-mid); }
+  .tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-3); margin: 6px 0; z-index: 2; border: 2px solid #fff; }
+  .tl-dot.done { background: var(--green-mid); }
+  .tl-dot.current { background: var(--blue-mid); box-shadow: 0 0 0 4px var(--blue-light); }
+  .tl-content { padding: 0 12px 24px; flex: 1; }
+  .tl-title { font-size: 13px; font-weight: 500; }
+  .tl-meta { font-size: 12px; color: var(--text-tertiary); }
+
+  /* Responsive */
+  @media (max-width: 1000px) {
+    .content { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect width="7" height="7" rx="2" fill="white"/><rect x="9" y="9" width="7" height="7" rx="2" fill="white" fill-opacity="0.4"/></svg>
+    </div>
+    <span class="logo-text">Procure</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a href="#" class="nav-item">Dashboard</a>
+    <a href="#" class="nav-item active">Requests</a>
+    <div class="nav-section-label">Management</div>
+    <a href="#" class="nav-item">Vendors</a>
+    <a href="#" class="nav-item">Budget</a>
+  </nav>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="breadcrumb">
+      <a href="#">Requests</a>
+      <span class="breadcrumb-sep">/</span>
+      <span style="font-weight: 500;">PR-4029</span>
+      <span class="status-pill">Pending Review</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost">Save draft</button>
+      <button class="btn">View contract</button>
+      <button class="btn btn-primary">Actions</button>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="left-col">
+      <div class="card">
+        <div class="hero-vendor">
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div class="vendor-logo">
+              <svg viewBox="0 0 24 24"><path d="M22.4 13.4c-.4-1.4-1.5-2.5-2.9-2.8C19 7.5 16 5 12.4 5 9.5 5 7 6.6 5.6 9c-2.5.3-4.4 2.4-4.4 5 0 2.8 2.2 5 5 5h15c2.2 0 4-1.8 4-4 0-1.2-.5-2.3-1.3-3-.1-.2-.3-.4-.5-.6z"/></svg>
+            </div>
+            <div>
+              <h1 style="font-size:20px; font-weight:600;">HubSpot CRM</h1>
+              <p style="color:var(--text-tertiary); font-size:13px;">Marketing Hub Professional Plan</p>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="cost-value">$7,499</div>
+            <div class="cost-trend">↓ 12% vs last period</div>
+          </div>
+        </div>
+        <div class="stats-strip">
+          <div class="stat">
+            <div class="stat-label">Requestor</div>
+            <div class="stat-value">Alex Garcia</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Dept</div>
+            <div class="stat-value">Marketing</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Frequency</div>
+            <div class="stat-value">Annual</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Deadline</div>
+            <div class="stat-value">Jun 30, 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:24px;">
+        <h3 style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-tertiary); margin-bottom:12px;">Business Justification</h3>
+        <p style="font-size:14px; line-height:1.6; color:var(--text-secondary);">
+          Consolidating our marketing tech stack. Moving away from Mailchimp and manual Google Sheets to automate lead generation and attribution. Expected ROI is 15% reduction in manual data entry time for the Growth team.
+        </p>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+        <div class="card" style="padding:20px;">
+          <h3 class="stat-label" style="margin-bottom:12px;">Context</h3>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; justify-content:space-between; font-size:13px;">
+                <span style="color:var(--text-tertiary)">Users Affected</span>
+                <span style="font-weight:500">8 Licenses</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:13px;">
+                <span style="color:var(--text-tertiary)">Integrations</span>
+                <span style="font-weight:500">Salesforce</span>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:20px;">
+            <h3 class="stat-label" style="margin-bottom:12px;">Security</h3>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; justify-content:space-between; font-size:13px;">
+                  <span style="color:var(--text-tertiary)">SSO Required</span>
+                  <span style="font-weight:500">Yes (Okta)</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:13px;">
+                  <span style="color:var(--text-tertiary)">SOC2 Check</span>
+                  <span style="color:var(--green); font-weight:500">Passed</span>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="card">
+        <div style="padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:600; font-size:13px;">Approval Workflow</span>
+          <span style="font-size:11px; color:var(--text-tertiary)">Step 2 of 4</span>
+        </div>
+        
+        <div class="timeline">
+            <div class="tl-step">
+                <div class="tl-icon-col"><div class="tl-dot done"></div><div class="tl-line active"></div></div>
+                <div class="tl-content">
+                    <div class="tl-title">Request Submitted</div>
+                    <div class="tl-meta">Alex Garcia • Jun 19</div>
+                </div>
+            </div>
+            <div class="tl-step">
+                <div class="tl-icon-col"><div class="tl-dot current"></div><div class="tl-line"></div></div>
+                <div class="tl-content">
+                    <div class="tl-title" style="color:var(--blue); font-weight:600;">Manager Approval</div>
+                    <div class="tl-meta">Emily Carter (You)</div>
+                </div>
+            </div>
+            <div class="tl-step">
+                <div class="tl-icon-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                <div class="tl-content">
+                    <div class="tl-title">Security Review</div>
+                    <div class="tl-meta">IT Operations</div>
+                </div>
+            </div>
+            <div class="tl-step">
+                <div class="tl-icon-col"><div class="tl-dot"></div></div>
+                <div class="tl-content">
+                    <div class="tl-title">Finance Sign-off</div>
+                    <div class="tl-meta">Jason Brooks</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-zone">
+            <div class="az-label">Action Required</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.4;">Review the justification and budget impact before approving.</p>
+            <div class="az-btns">
+                <button class="az-btn az-approve">Approve Request</button>
+                <button class="az-btn az-reject" style="border: 1px solid var(--border-strong); background: transparent; color: var(--text-primary);">Reject...</button>
+            </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:20px;">
+        <h3 class="stat-label" style="margin-bottom:12px;">Activity</h3>
+        <textarea style="width:100%; border:1px solid var(--border-strong); border-radius:8px; padding:10px; font-family:inherit; font-size:13px; outline:none; resize:none;" placeholder="Add a comment..."></textarea>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

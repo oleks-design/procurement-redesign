@@ -3,866 +3,330 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Software Request — HubSpot · Procurement · v2</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Software Request — HubSpot · v2</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['DM Sans', 'sans-serif'], mono: ['DM Mono', 'monospace'] },
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #F5F4F0;
-    --surface: #FFFFFF;
-    --surface-2: #F0EFE9;
-    --surface-3: #E8E7E0;
-    --border: rgba(0,0,0,0.08);
-    --border-strong: rgba(0,0,0,0.14);
-    --text-primary: #1A1916;
-    --text-secondary: #6B6960;
-    --text-tertiary: #9E9D96;
-    --text-inverse: #FFFFFF;
-    --green: #2D6A4F;
-    --green-light: #D8EDDF;
-    --green-mid: #52B788;
-    --blue: #1B4F8A;
-    --blue-light: #DCE8F7;
-    --blue-mid: #4A90D9;
-    --amber: #92400E;
-    --amber-light: #FEF3C7;
-    --amber-mid: #F59E0B;
-    --red: #7F1D1D;
-    --red-light: #FEE2E2;
-    --red-mid: #EF4444;
-    --purple: #3B0764;
-    --purple-light: #EDE9FE;
-    --nav-w: 220px;
-    --header-h: 56px;
-    --radius: 10px;
-    --radius-lg: 14px;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text-primary);
-    font-size: 14px;
-    line-height: 1.5;
-    min-height: 100vh;
-    display: flex;
-  }
-
-  /* ── Sidebar ── */
-  .sidebar {
-    width: var(--nav-w);
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0; left: 0; bottom: 0;
-    z-index: 100;
-    animation: slideInLeft .4s ease both;
-  }
-  @keyframes slideInLeft { from { transform: translateX(-16px); opacity: 0; } }
-
-  .sidebar-logo {
-    height: var(--header-h);
-    display: flex; align-items: center;
-    padding: 0 18px; gap: 10px;
-    border-bottom: 1px solid var(--border);
-  }
-  .logo-mark {
-    width: 28px; height: 28px;
-    background: var(--text-primary);
-    border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .logo-mark svg { width: 14px; height: 14px; }
-  .logo-text { font-size: 14px; font-weight: 500; letter-spacing: -.2px; }
-
-  .sidebar-nav { padding: 12px 10px; flex: 1; }
-  .nav-section-label {
-    font-size: 10px; font-weight: 500;
-    letter-spacing: .08em; text-transform: uppercase;
-    color: var(--text-tertiary);
-    padding: 8px 8px 4px;
-  }
-  .nav-item {
-    display: flex; align-items: center; gap: 9px;
-    padding: 8px 10px;
-    border-radius: 7px;
-    color: var(--text-secondary);
-    font-size: 13px;
-    cursor: pointer;
-    transition: background .15s, color .15s;
-    margin-bottom: 1px;
-    text-decoration: none;
-  }
-  .nav-item:hover { background: var(--surface-2); color: var(--text-primary); }
-  .nav-item.active { background: var(--surface-2); color: var(--text-primary); font-weight: 500; }
-  .nav-item svg { width: 16px; height: 16px; opacity: .7; flex-shrink: 0; }
-  .nav-item.active svg { opacity: 1; }
-
-  .sidebar-footer { padding: 12px 10px; border-top: 1px solid var(--border); }
-  .user-row {
-    display: flex; align-items: center; gap: 9px;
-    padding: 8px 10px; border-radius: 7px; cursor: pointer;
-  }
-  .user-row:hover { background: var(--surface-2); }
-  .avatar {
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--surface-3);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 500;
-    color: var(--text-secondary); flex-shrink: 0;
-  }
-  .user-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
-  .user-role { font-size: 11px; color: var(--text-tertiary); }
-
-  /* ── Main ── */
-  .main {
-    margin-left: var(--nav-w);
-    flex: 1; display: flex; flex-direction: column; min-height: 100vh;
-  }
-
-  .topbar {
-    height: var(--header-h);
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 28px;
-    position: sticky; top: 0; z-index: 50;
-    animation: fadeDown .35s ease both;
-  }
-  @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } }
-
-  .breadcrumb {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 13px; color: var(--text-tertiary);
-  }
-  .breadcrumb a { color: var(--text-tertiary); text-decoration: none; }
-  .breadcrumb a:hover { color: var(--text-primary); }
-  .breadcrumb-sep { opacity: .4; }
-  .breadcrumb-current { color: var(--text-primary); font-weight: 500; }
-
-  .status-pill {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 11px; font-weight: 500;
-    padding: 3px 9px; border-radius: 20px;
-    background: var(--amber-light); color: var(--amber);
-    border: 1px solid rgba(245,158,11,.2);
-    margin-left: 10px;
-  }
-  .status-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--amber-mid); }
-
-  .topbar-actions { display: flex; align-items: center; gap: 8px; }
-  .btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 500;
-    padding: 7px 14px; border-radius: 8px;
-    border: 1px solid var(--border-strong);
-    background: var(--surface); color: var(--text-primary);
-    cursor: pointer;
-    transition: background .15s, transform .1s;
-    white-space: nowrap;
-  }
-  .btn:hover { background: var(--surface-2); }
-  .btn:active { transform: scale(.98); }
-  .btn-danger { background: var(--red-light); color: var(--red); border-color: rgba(239,68,68,.2); }
-  .btn-danger:hover { background: #fecaca; }
-  .btn-primary { background: var(--text-primary); color: var(--text-inverse); border-color: transparent; }
-  .btn-primary:hover { background: #2d2c29; }
-
-  /* ── Content grid — FLIPPED ── */
-  .content {
-    padding: 28px;
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 20px;
-    align-items: start;
-    animation: fadeUp .45s ease both .1s;
-  }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } }
-
-  .left-col { display: flex; flex-direction: column; gap: 14px; }
-  .right-col {
-    display: flex; flex-direction: column; gap: 14px;
-    position: sticky; top: calc(var(--header-h) + 28px);
-  }
-
-  /* ── Card base ── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    animation: fadeUp .4s ease both;
-  }
-  .card:nth-child(1) { animation-delay: .08s; }
-  .card:nth-child(2) { animation-delay: .14s; }
-  .card:nth-child(3) { animation-delay: .2s; }
-
-  /* ── Panel header ── */
-  .panel-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-  }
-  .panel-title { font-size: 13px; font-weight: 500; }
-  .panel-meta { font-size: 11px; color: var(--text-tertiary); }
-
-  /* ── Workflow card (left, primary) ── */
-  .workflow-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 24px;
-    border-bottom: 1px solid var(--border);
-  }
-  .workflow-title-block {}
-  .workflow-eyebrow {
-    font-size: 10px; font-weight: 500;
-    text-transform: uppercase; letter-spacing: .08em;
-    color: var(--text-tertiary); margin-bottom: 3px;
-  }
-  .workflow-title { font-size: 16px; font-weight: 500; letter-spacing: -.2px; }
-
-  .progress-cluster { text-align: right; }
-  .progress-fraction {
-    font-size: 22px; font-weight: 500;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: -.5px; color: var(--text-primary);
-  }
-  .progress-fraction span { font-size: 13px; font-weight: 400; color: var(--text-tertiary); }
-  .progress-label-sm { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
-
-  .progress-wrap { padding: 12px 24px; border-bottom: 1px solid var(--border); }
-  .progress-row { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: 11px; color: var(--text-tertiary); }
-  .progress-row b { color: var(--text-primary); font-weight: 500; }
-  .progress-bg { height: 3px; background: var(--surface-3); border-radius: 2px; }
-  .progress-fill { height: 3px; width: 0; background: var(--green-mid); border-radius: 2px; transition: width .7s cubic-bezier(.4,0,.2,1); }
-
-  /* ── Timeline (expanded, left column) ── */
-  .timeline { padding: 8px 0; }
-
-  .tl-step { display: flex; gap: 0; align-items: stretch; }
-  .tl-left {
-    width: 64px; flex-shrink: 0;
-    display: flex; flex-direction: column; align-items: center;
-    padding-top: 16px;
-  }
-  .tl-connector { width: 2px; flex: 1; min-height: 20px; }
-  .conn-done { background: var(--green-mid); }
-  .conn-dashed {
-    background: repeating-linear-gradient(
-      to bottom,
-      var(--green-mid) 0, var(--green-mid) 4px,
-      transparent 4px, transparent 9px
-    );
-  }
-  .conn-pending { background: var(--surface-3); }
-
-  .tl-icon {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; z-index: 1;
-  }
-  .icon-done { background: var(--green-light); border: 1.5px solid var(--green-mid); }
-  .icon-done svg { width: 12px; height: 12px; stroke: var(--green); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-  .icon-active {
-    background: var(--blue-light); border: 2px solid var(--blue-mid);
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%,100% { box-shadow: 0 0 0 0 rgba(74,144,217,.3); }
-    50% { box-shadow: 0 0 0 5px rgba(74,144,217,.08); }
-  }
-  .icon-active-inner { width: 10px; height: 10px; border-radius: 50%; background: var(--blue-mid); }
-  .icon-pending { background: var(--surface-2); border: 1.5px solid var(--surface-3); }
-  .icon-pending-inner { width: 7px; height: 7px; border-radius: 50%; background: var(--surface-3); }
-
-  .tl-body { flex: 1; padding: 12px 24px 12px 4px; }
-  .tl-state {
-    font-size: 9px; font-weight: 500;
-    text-transform: uppercase; letter-spacing: .09em;
-    margin-bottom: 3px;
-  }
-  .state-done { color: var(--green); }
-  .state-active { color: var(--blue); }
-  .state-pending { color: var(--text-tertiary); }
-
-  .tl-name { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
-  .tl-sub { font-size: 12px; color: var(--text-secondary); }
-  .tl-date { font-size: 11px; color: var(--text-tertiary); margin-top: 3px; }
-
-  /* ── Action zone (inside left col card, wider) ── */
-  .action-zone {
-    margin: 2px 20px 12px;
-    background: var(--blue-light);
-    border: 1px solid rgba(74,144,217,.22);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-  }
-  .az-eyebrow {
-    font-size: 9px; font-weight: 500;
-    text-transform: uppercase; letter-spacing: .09em;
-    color: var(--blue); margin-bottom: 6px;
-  }
-  .az-who { font-size: 12px; color: var(--text-primary); margin-bottom: 12px; line-height: 1.5; }
-  .az-who strong { font-weight: 500; }
-  .az-btns { display: flex; gap: 8px; }
-  .az-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px; font-weight: 500;
-    padding: 8px 18px; border-radius: 7px;
-    border: 1px solid; cursor: pointer;
-    transition: opacity .15s, transform .1s;
-    flex: 1;
-  }
-  .az-btn:hover { opacity: .85; }
-  .az-btn:active { transform: scale(.97); }
-  .az-approve { background: var(--green-light); color: var(--green); border-color: rgba(82,183,136,.3); }
-  .az-reject { background: var(--red-light); color: var(--red); border-color: rgba(239,68,68,.2); }
-  .az-reassign { background: var(--surface); color: var(--text-secondary); border-color: var(--border-strong); flex: 0; }
-
-  .tl-divider { border: none; border-top: 1px solid var(--border); margin: 2px 20px; }
-
-  /* ── Activity feed (below timeline) ── */
-  .activity-card { }
-  .activity-feed { padding: 4px 0 8px; }
-
-  .activity-tabs {
-    display: flex; padding: 0 20px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 0;
-  }
-  .tab {
-    font-size: 12px; font-weight: 500;
-    padding: 10px 14px;
-    color: var(--text-tertiary);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: color .15s;
-  }
-  .tab.active { color: var(--text-primary); border-bottom-color: var(--text-primary); }
-
-  .feed-item {
-    display: flex; gap: 12px; align-items: flex-start;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    transition: background .12s;
-  }
-  .feed-item:last-child { border-bottom: none; }
-  .feed-item:hover { background: var(--surface-2); }
-
-  .feed-avatar {
-    width: 30px; height: 30px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 500;
-    flex-shrink: 0; margin-top: 1px;
-  }
-  .av-green { background: var(--green-light); color: var(--green); }
-  .av-blue { background: var(--blue-light); color: var(--blue); }
-  .av-gray { background: var(--surface-3); color: var(--text-secondary); }
-  .av-system { background: var(--surface-2); color: var(--text-tertiary); border: 1px solid var(--border); }
-
-  .feed-content { flex: 1; }
-  .feed-text { font-size: 12px; color: var(--text-primary); line-height: 1.55; }
-  .feed-text strong { font-weight: 500; }
-  .feed-time { font-size: 11px; color: var(--text-tertiary); margin-top: 3px; }
-  .feed-comment {
-    margin-top: 7px;
-    font-size: 12px; color: var(--text-secondary);
-    background: var(--surface-2);
-    border-radius: 7px;
-    padding: 8px 11px;
-    line-height: 1.55;
-  }
-
-  .comment-compose {
-    display: flex; gap: 10px; align-items: flex-start;
-    padding: 14px 20px;
-    border-top: 1px solid var(--border);
-  }
-  .compose-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--purple-light); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--purple); flex-shrink: 0; margin-top: 1px; }
-  .compose-input {
-    flex: 1;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    padding: 8px 12px;
-    border: 1px solid var(--border-strong);
-    border-radius: 7px;
-    background: var(--surface);
-    color: var(--text-primary);
-    resize: none; outline: none;
-    transition: border-color .15s;
-    min-height: 36px;
-  }
-  .compose-input:focus { border-color: var(--blue-mid); }
-  .compose-input::placeholder { color: var(--text-tertiary); }
-
-  /* ── Right col: details panel ── */
-
-  /* Vendor hero — compact for right rail */
-  .vendor-hero {
-    padding: 16px 18px;
-    border-bottom: 1px solid var(--border);
-  }
-  .vendor-row { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
-  .vendor-logo {
-    width: 38px; height: 38px; border-radius: 9px;
-    background: #FF7A59;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .vendor-logo svg { width: 20px; height: 20px; fill: white; }
-  .vendor-name { font-size: 15px; font-weight: 500; letter-spacing: -.2px; }
-  .vendor-cat { font-size: 11px; color: var(--text-tertiary); }
-
-  .cost-hero {
-    background: var(--surface-2);
-    border-radius: 9px;
-    padding: 12px 14px;
-    display: flex; align-items: baseline; justify-content: space-between;
-  }
-  .cost-left {}
-  .cost-eyebrow {
-    font-size: 10px; font-weight: 500;
-    text-transform: uppercase; letter-spacing: .07em;
-    color: var(--text-tertiary); margin-bottom: 3px;
-  }
-  .cost-value {
-    font-size: 24px; font-weight: 500;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: -.5px; color: var(--text-primary);
-  }
-  .cost-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
-
-  /* Urgency strip */
-  .urgency-strip {
-    display: flex; align-items: center; gap: 8px;
-    padding: 9px 18px;
-    background: var(--amber-light);
-    border-top: 1px solid rgba(245,158,11,.15);
-  }
-  .urgency-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber-mid); flex-shrink: 0; }
-  .urgency-text { font-size: 11px; font-weight: 500; color: var(--amber); line-height: 1.4; }
-
-  /* Details sections */
-  .detail-section { padding: 14px 18px; border-bottom: 1px solid var(--border); }
-  .detail-section:last-child { border-bottom: none; }
-  .section-eyebrow {
-    font-size: 10px; font-weight: 500;
-    text-transform: uppercase; letter-spacing: .08em;
-    color: var(--text-tertiary); margin-bottom: 8px;
-  }
-  .justification-text { font-size: 12px; color: var(--text-primary); line-height: 1.7; }
-
-  .meta-row {
-    display: flex; justify-content: space-between; align-items: baseline;
-    padding: 5px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 12px;
-  }
-  .meta-row:last-child { border-bottom: none; }
-  .meta-key { color: var(--text-tertiary); }
-  .meta-val { font-weight: 500; color: var(--text-primary); text-align: right; }
-
-  /* Upload */
-  .upload-area {
-    border: 1.5px dashed var(--border-strong);
-    border-radius: 8px; padding: 14px;
-    text-align: center; color: var(--text-tertiary);
-    font-size: 11px; cursor: pointer;
-    transition: border-color .15s, background .15s, color .15s;
-    margin-top: 8px;
-  }
-  .upload-area:hover { border-color: var(--blue-mid); background: var(--blue-light); color: var(--blue); }
-  .upload-area svg { width: 16px; height: 16px; display: block; margin: 0 auto 5px; opacity: .5; }
-
-  /* ── Scrollbar ── */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 2px; }
+  body { background: #F5F4F0; }
+  @keyframes pulse-ring { 0%,100%{box-shadow:0 0 0 0 rgba(74,144,217,.35)} 50%{box-shadow:0 0 0 5px rgba(74,144,217,.08)} }
+  .pulse { animation: pulse-ring 2s ease-in-out infinite; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .fade-1 { animation: fadeUp .4s ease .08s both; }
+  .fade-2 { animation: fadeUp .4s ease .14s both; }
+  .fade-3 { animation: fadeUp .4s ease .2s both; }
 </style>
 </head>
-<body>
+<body class="font-sans text-[#1A1916] min-h-screen flex">
 
 <!-- Sidebar -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-mark">
-      <svg viewBox="0 0 14 14" fill="none">
-        <rect x="1" y="1" width="5" height="5" rx="1.5" fill="white"/>
-        <rect x="8" y="1" width="5" height="5" rx="1.5" fill="white" opacity=".6"/>
-        <rect x="1" y="8" width="5" height="5" rx="1.5" fill="white" opacity=".6"/>
-        <rect x="8" y="8" width="5" height="5" rx="1.5" fill="white" opacity=".3"/>
-      </svg>
+<aside class="w-56 bg-white border-r border-black/[.08] flex flex-col fixed top-0 left-0 bottom-0 z-50">
+  <div class="h-14 flex items-center px-4 gap-2.5 border-b border-black/[.08]">
+    <div class="w-7 h-7 bg-[#1A1916] rounded-lg flex items-center justify-center">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1.5" fill="white"/><rect x="8" y="1" width="5" height="5" rx="1.5" fill="white" opacity=".6"/><rect x="1" y="8" width="5" height="5" rx="1.5" fill="white" opacity=".6"/><rect x="8" y="8" width="5" height="5" rx="1.5" fill="white" opacity=".3"/></svg>
     </div>
-    <span class="logo-text">Procure</span>
+    <span class="text-sm font-medium tracking-tight">Procure</span>
   </div>
-  <nav class="sidebar-nav">
-    <div class="nav-section-label">Overview</div>
-    <a class="nav-item" href="#">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="1.5" y="1.5" width="5" height="5" rx="1"/><rect x="9.5" y="1.5" width="5" height="5" rx="1"/><rect x="1.5" y="9.5" width="5" height="5" rx="1"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/></svg>
+  <nav class="p-2.5 flex-1">
+    <p class="text-[10px] font-medium uppercase tracking-widest text-[#9E9D96] px-2 pt-2 pb-1">Overview</p>
+    <a href="#" class="flex items-center gap-2 px-2.5 py-2 rounded-lg text-[#6B6960] text-[13px] hover:bg-[#F0EFE9] transition-colors mb-0.5">
+      <svg class="w-4 h-4 opacity-70" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="1.5" y="1.5" width="5" height="5" rx="1"/><rect x="9.5" y="1.5" width="5" height="5" rx="1"/><rect x="1.5" y="9.5" width="5" height="5" rx="1"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/></svg>
       Insights
     </a>
-    <div class="nav-section-label" style="margin-top:8px">Workflows</div>
-    <a class="nav-item active" href="#">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4h12M2 8h8M2 12h5"/></svg>
+    <p class="text-[10px] font-medium uppercase tracking-widest text-[#9E9D96] px-2 pt-3 pb-1">Workflows</p>
+    <a href="#" class="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-[#F0EFE9] text-[#1A1916] text-[13px] font-medium mb-0.5">
+      <svg class="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4h12M2 8h8M2 12h5"/></svg>
       Procurement
     </a>
-    <a class="nav-item" href="#">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8h6M8 5v6"/></svg>
+    <a href="#" class="flex items-center gap-2 px-2.5 py-2 rounded-lg text-[#6B6960] text-[13px] hover:bg-[#F0EFE9] transition-colors mb-0.5">
+      <svg class="w-4 h-4 opacity-70" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8h6M8 5v6"/></svg>
       Applications
     </a>
-    <a class="nav-item" href="#">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="5" r="2.5"/><path d="M2.5 13c0-2.485 2.462-4.5 5.5-4.5s5.5 2.015 5.5 4.5"/></svg>
+    <a href="#" class="flex items-center gap-2 px-2.5 py-2 rounded-lg text-[#6B6960] text-[13px] hover:bg-[#F0EFE9] transition-colors mb-0.5">
+      <svg class="w-4 h-4 opacity-70" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="5" r="2.5"/><path d="M2.5 13c0-2.485 2.462-4.5 5.5-4.5s5.5 2.015 5.5 4.5"/></svg>
       Employees
     </a>
-    <a class="nav-item" href="#">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 2v3M8 11v3M2 8h3M11 8h3M3.93 3.93l2.12 2.12M9.95 9.95l2.12 2.12M3.93 12.07l2.12-2.12M9.95 6.05l2.12-2.12"/></svg>
-      Integrations
-    </a>
   </nav>
-  <div class="sidebar-footer">
-    <div class="user-row">
-      <div class="avatar">AG</div>
-      <div>
-        <div class="user-name">Alex Garcia</div>
-        <div class="user-role">Admin · Marketing</div>
-      </div>
+  <div class="p-2.5 border-t border-black/[.08]">
+    <div class="flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-[#F0EFE9] cursor-pointer">
+      <div class="w-7 h-7 rounded-full bg-[#E8E7E0] flex items-center justify-center text-[11px] font-medium text-[#6B6960] flex-shrink-0">AG</div>
+      <div><p class="text-xs font-medium leading-none mb-0.5">Alex Garcia</p><p class="text-[11px] text-[#9E9D96]">Admin · Marketing</p></div>
     </div>
   </div>
 </aside>
 
 <!-- Main -->
-<main class="main">
-
-  <header class="topbar">
-    <div style="display:flex;align-items:center">
-      <div class="breadcrumb">
-        <a href="#">Procurement</a>
-        <span class="breadcrumb-sep">›</span>
-        <span class="breadcrumb-current">Software request</span>
-      </div>
-      <span class="status-pill"><span class="status-dot"></span>In progress</span>
+<main class="ml-56 flex-1 flex flex-col min-h-screen">
+  <header class="h-14 bg-white border-b border-black/[.08] flex items-center justify-between px-7 sticky top-0 z-40">
+    <div class="flex items-center gap-2">
+      <nav class="flex items-center gap-1.5 text-[13px] text-[#9E9D96]">
+        <a href="#" class="hover:text-[#1A1916] transition-colors">Procurement</a>
+        <span class="opacity-40">›</span>
+        <span class="text-[#1A1916] font-medium">Software request</span>
+      </nav>
+      <span class="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 ml-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>In progress
+      </span>
     </div>
-    <div class="topbar-actions">
-      <button class="btn btn-danger" onclick="toast('Cancel request — confirmation required')">Cancel request</button>
-      <button class="btn btn-primary" onclick="toast('Approve all steps — confirmation required')">Approve all steps</button>
+    <div class="flex items-center gap-2">
+      <button onclick="toast('Cancel request — confirmation required')" class="text-[13px] font-medium px-3.5 py-1.5 rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100 transition-colors cursor-pointer">Cancel request</button>
+      <button onclick="toast('Approve all steps — confirmation required')" class="text-[13px] font-medium px-3.5 py-1.5 rounded-lg bg-[#1A1916] text-white hover:bg-zinc-800 transition-colors cursor-pointer">Approve all steps</button>
     </div>
   </header>
 
-  <div class="content">
+  <div class="p-7 grid grid-cols-[1fr_300px] gap-5 items-start">
 
-    <!-- LEFT — Activity + Timeline (primary) -->
-    <div class="left-col">
+    <!-- LEFT — Timeline + Activity -->
+    <div class="flex flex-col gap-3.5">
 
-      <!-- Approval workflow card -->
-      <div class="card">
-        <div class="workflow-header">
-          <div class="workflow-title-block">
-            <div class="workflow-eyebrow">Approval workflow</div>
-            <div class="workflow-title">Software request — HubSpot</div>
+      <!-- Workflow card -->
+      <div class="bg-white rounded-2xl border border-black/[.08] overflow-hidden fade-1">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-black/[.08]">
+          <div>
+            <p class="text-[10px] font-medium uppercase tracking-widest text-[#9E9D96] mb-0.5">Approval workflow</p>
+            <p class="text-[15px] font-medium tracking-tight">Software request — HubSpot</p>
           </div>
-          <div class="progress-cluster">
-            <div class="progress-fraction">1<span> / 5</span></div>
-            <div class="progress-label-sm">steps completed</div>
-          </div>
-        </div>
-
-        <div class="progress-wrap">
-          <div class="progress-row">
-            <span>Progress</span>
-            <b id="progress-pct">20%</b>
-          </div>
-          <div class="progress-bg">
-            <div class="progress-fill" id="progress-bar"></div>
+          <div class="text-right">
+            <p class="font-mono text-[22px] font-medium tracking-tight">1<span class="text-[13px] font-normal text-[#9E9D96]"> / 5</span></p>
+            <p class="text-[11px] text-[#9E9D96]">steps completed</p>
           </div>
         </div>
+        <div class="px-5 py-3 border-b border-black/[.08]">
+          <div class="flex justify-between text-[11px] text-[#9E9D96] mb-1.5"><span>Progress</span><span id="pct" class="font-medium text-[#1A1916]">20%</span></div>
+          <div class="h-[3px] bg-[#E8E7E0] rounded-full"><div id="bar" class="h-[3px] bg-emerald-400 rounded-full transition-all duration-700" style="width:0%"></div></div>
+        </div>
 
-        <div class="timeline">
-
-          <!-- Step 1: Done -->
-          <div class="tl-step">
-            <div class="tl-left">
-              <div style="height:16px"></div>
-              <div class="tl-icon icon-done">
-                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+        <!-- Timeline -->
+        <div class="py-2">
+          <!-- Done -->
+          <div class="flex items-stretch">
+            <div class="w-16 flex flex-col items-center flex-shrink-0 pt-4">
+              <div class="w-7 h-7 rounded-full bg-emerald-50 border-[1.5px] border-emerald-400 flex items-center justify-center z-10">
+                <svg class="w-3 h-3 stroke-emerald-700" viewBox="0 0 12 12" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
               </div>
-              <div class="tl-connector conn-done"></div>
+              <div class="w-0.5 flex-1 bg-emerald-300 min-h-5"></div>
             </div>
-            <div class="tl-body">
-              <div class="tl-state state-done">Completed</div>
-              <div class="tl-name">Request submitted</div>
-              <div class="tl-sub">By Alex Garcia · Marketing</div>
-              <div class="tl-date">Jun 19, 2025 · 9:14 AM</div>
+            <div class="flex-1 px-1 pr-6 py-3">
+              <p class="text-[9px] font-medium uppercase tracking-widest text-emerald-700 mb-0.5">Completed</p>
+              <p class="text-[13px] font-medium">Request submitted</p>
+              <p class="text-[12px] text-[#6B6960]">By Alex Garcia · Marketing</p>
+              <p class="text-[11px] text-[#9E9D96] mt-1">Jun 19, 2025 · 9:14 AM</p>
             </div>
           </div>
-
-          <!-- Step 2: Active -->
-          <div class="tl-step">
-            <div class="tl-left">
-              <div class="tl-connector conn-dashed" style="height:14px;min-height:14px"></div>
-              <div class="tl-icon icon-active">
-                <div class="icon-active-inner"></div>
+          <!-- Active -->
+          <div class="flex items-stretch">
+            <div class="w-16 flex flex-col items-center flex-shrink-0">
+              <div class="w-0.5 h-3" style="background:repeating-linear-gradient(to bottom,#6ee7b7 0,#6ee7b7 4px,transparent 4px,transparent 9px)"></div>
+              <div id="active-icon" class="w-7 h-7 rounded-full bg-blue-50 border-2 border-blue-400 flex items-center justify-center z-10 pulse">
+                <div class="w-2.5 h-2.5 rounded-full bg-blue-400"></div>
               </div>
-              <div class="tl-connector conn-pending"></div>
+              <div class="w-0.5 flex-1 bg-[#E8E7E0] min-h-5"></div>
             </div>
-            <div class="tl-body" style="padding-top:10px">
-              <div class="tl-state state-active">Awaiting action</div>
-              <div class="tl-name">Manager approval</div>
-              <div class="tl-sub">Emily Carter · 11 days remaining</div>
+            <div class="flex-1 px-1 pr-6 py-3">
+              <p id="active-state" class="text-[9px] font-medium uppercase tracking-widest text-blue-700 mb-0.5">Awaiting action</p>
+              <p class="text-[13px] font-medium">Manager approval</p>
+              <p class="text-[12px] text-[#6B6960]">Emily Carter · 11 days remaining</p>
             </div>
-          </div>
-
-        </div>
-
-        <!-- Action zone — full width, centred buttons -->
-        <div class="action-zone" id="action-zone">
-          <div class="az-eyebrow">Your action required</div>
-          <div class="az-who">You are reviewing this request as <strong>Emily Carter</strong>. Approve to advance to finance, reject to return to the requestor, or reassign to another approver.</div>
-          <div class="az-btns">
-            <button class="az-btn az-approve" onclick="handleApprove()">Approve</button>
-            <button class="az-btn az-reject" onclick="handleReject()">Reject</button>
-            <button class="az-btn az-reassign" onclick="toast('Reassign panel would open here')">Reassign</button>
           </div>
         </div>
 
-        <div class="tl-divider"></div>
+        <!-- Action zone -->
+        <div id="action-zone" class="mx-4 mb-4 bg-blue-50 border border-blue-200/60 rounded-xl p-4">
+          <p class="text-[9px] font-medium uppercase tracking-widest text-blue-700 mb-1.5">Your action required</p>
+          <p class="text-[12px] mb-3">You are reviewing this request as <strong class="font-medium">Emily Carter</strong>. Approve to advance to finance, reject to return to the requestor, or reassign to another approver.</p>
+          <div class="flex gap-2">
+            <button onclick="handleApprove()" class="flex-1 text-[12px] font-medium py-2.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-colors cursor-pointer">Approve</button>
+            <button onclick="toast('Rejection flow — reason required')" class="flex-1 text-[12px] font-medium py-2.5 rounded-lg bg-red-50 text-red-800 border border-red-200 hover:bg-red-100 transition-colors cursor-pointer">Reject</button>
+            <button onclick="toast('Reassign panel would open')" class="text-[12px] font-medium py-2.5 px-4 rounded-lg bg-white text-[#6B6960] border border-black/10 hover:bg-[#F0EFE9] transition-colors cursor-pointer">Reassign</button>
+          </div>
+        </div>
 
-        <div class="timeline" style="padding-top:4px">
+        <div class="border-t border-black/[.08] mx-5"></div>
 
-          <!-- Step 3 -->
-          <div class="tl-step">
-            <div class="tl-left">
-              <div class="tl-connector conn-pending" style="height:14px;min-height:14px"></div>
-              <div class="tl-icon icon-pending"><div class="icon-pending-inner"></div></div>
-              <div class="tl-connector conn-pending"></div>
+        <div class="py-2">
+          <div class="flex items-stretch">
+            <div class="w-16 flex flex-col items-center flex-shrink-0 pt-3">
+              <div class="w-0.5 h-3 bg-[#E8E7E0]"></div>
+              <div class="w-7 h-7 rounded-full bg-[#F0EFE9] border-[1.5px] border-[#E8E7E0] flex items-center justify-center z-10"><div class="w-2 h-2 rounded-full bg-[#E8E7E0]"></div></div>
+              <div class="w-0.5 flex-1 bg-[#E8E7E0] min-h-5"></div>
             </div>
-            <div class="tl-body" style="padding-top:10px">
-              <div class="tl-state state-pending">Upcoming</div>
-              <div class="tl-name">Finance approval</div>
-              <div class="tl-sub">Jason Brooks · Pending previous step</div>
+            <div class="flex-1 px-1 pr-6 py-3">
+              <p class="text-[9px] font-medium uppercase tracking-widest text-[#9E9D96] mb-0.5">Upcoming</p>
+              <p class="text-[13px] font-medium">Finance approval</p>
+              <p class="text-[12px] text-[#9E9D96]">Jason Brooks · Pending previous step</p>
             </div>
           </div>
-
-          <!-- Step 4 -->
-          <div class="tl-step">
-            <div class="tl-left">
-              <div class="tl-connector conn-pending" style="height:14px;min-height:14px"></div>
-              <div class="tl-icon icon-pending"><div class="icon-pending-inner"></div></div>
-              <div class="tl-connector conn-pending"></div>
+          <div class="flex items-stretch">
+            <div class="w-16 flex flex-col items-center flex-shrink-0 pt-1">
+              <div class="w-0.5 h-1 bg-[#E8E7E0]"></div>
+              <div class="w-7 h-7 rounded-full bg-[#F0EFE9] border-[1.5px] border-[#E8E7E0] flex items-center justify-center z-10"><div class="w-2 h-2 rounded-full bg-[#E8E7E0]"></div></div>
+              <div class="w-0.5 flex-1 bg-[#E8E7E0] min-h-5"></div>
             </div>
-            <div class="tl-body" style="padding-top:10px">
-              <div class="tl-state state-pending">Upcoming</div>
-              <div class="tl-name">Director approval</div>
-              <div class="tl-sub">Olivia Bennett · Pending previous step</div>
+            <div class="flex-1 px-1 pr-6 py-3">
+              <p class="text-[9px] font-medium uppercase tracking-widest text-[#9E9D96] mb-0.5">Upcoming</p>
+              <p class="text-[13px] font-medium">Director approval</p>
+              <p class="text-[12px] text-[#9E9D96]">Olivia Bennett · Pending previous step</p>
             </div>
           </div>
-
-          <!-- Step 5 -->
-          <div class="tl-step">
-            <div class="tl-left">
-              <div class="tl-connector conn-pending" style="height:14px;min-height:14px"></div>
-              <div class="tl-icon icon-pending"><div class="icon-pending-inner"></div></div>
-              <div style="flex:1"></div>
+          <div class="flex items-stretch">
+            <div class="w-16 flex flex-col items-center flex-shrink-0 pt-1">
+              <div class="w-0.5 h-1 bg-[#E8E7E0]"></div>
+              <div class="w-7 h-7 rounded-full bg-[#F0EFE9] border-[1.5px] border-[#E8E7E0] flex items-center justify-center z-10"><div class="w-2 h-2 rounded-full bg-[#E8E7E0]"></div></div>
             </div>
-            <div class="tl-body" style="padding-top:10px;padding-bottom:16px">
-              <div class="tl-state state-pending">Final step</div>
-              <div class="tl-name">Request fully approved</div>
-              <div class="tl-sub">All approvers signed off</div>
+            <div class="flex-1 px-1 pr-6 py-3 pb-5">
+              <p class="text-[9px] font-medium uppercase tracking-widest text-[#9E9D96] mb-0.5">Final step</p>
+              <p class="text-[13px] font-medium">Request fully approved</p>
+              <p class="text-[12px] text-[#9E9D96]">All approvers signed off</p>
             </div>
           </div>
-
         </div>
       </div>
 
       <!-- Activity feed -->
-      <div class="card activity-card">
-        <div class="activity-tabs">
-          <div class="tab active" onclick="setTab(this)">Activity</div>
-          <div class="tab" onclick="setTab(this)">Comments</div>
+      <div class="bg-white rounded-2xl border border-black/[.08] overflow-hidden fade-2">
+        <div class="flex border-b border-black/[.08]">
+          <button onclick="setTab(this)" class="tab-btn text-[12px] font-medium px-4 py-2.5 text-[#1A1916] border-b-2 border-[#1A1916] -mb-px cursor-pointer">Activity</button>
+          <button onclick="setTab(this)" class="tab-btn text-[12px] font-medium px-4 py-2.5 text-[#9E9D96] border-b-2 border-transparent -mb-px hover:text-[#1A1916] transition-colors cursor-pointer">Comments</button>
         </div>
-
-        <div class="activity-feed">
-
-          <div class="feed-item">
-            <div class="feed-avatar av-gray">AG</div>
-            <div class="feed-content">
-              <div class="feed-text"><strong>Alex Garcia</strong> submitted the request for <strong>HubSpot</strong> — $7,499 annual license</div>
-              <div class="feed-time">Jun 19, 2025 · 9:14 AM</div>
+        <div id="feed">
+          <div class="flex items-start gap-3 px-5 py-4 border-b border-black/[.08] hover:bg-[#F0EFE9] transition-colors">
+            <div class="w-8 h-8 rounded-full bg-[#E8E7E0] flex items-center justify-center text-[11px] font-medium text-[#6B6960] flex-shrink-0 mt-0.5">AG</div>
+            <div>
+              <p class="text-[12px]"><strong class="font-medium">Alex Garcia</strong> submitted the request for <strong class="font-medium">HubSpot</strong> — $7,499 annual license</p>
+              <p class="text-[11px] text-[#9E9D96] mt-1">Jun 19, 2025 · 9:14 AM</p>
             </div>
           </div>
-
-          <div class="feed-item">
-            <div class="feed-avatar av-system">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M7 4v3l2 2"/></svg>
-            </div>
-            <div class="feed-content">
-              <div class="feed-text">Workflow assigned — approval routed to <strong>Emily Carter</strong> (Manager)</div>
-              <div class="feed-time">Jun 19, 2025 · 9:14 AM · Automated</div>
-            </div>
-          </div>
-
-          <div class="feed-item">
-            <div class="feed-avatar av-blue">EC</div>
-            <div class="feed-content">
-              <div class="feed-text"><strong>Emily Carter</strong> opened the request</div>
-              <div class="feed-text feed-comment">Looks reasonable. Checking with finance on budget availability before I approve — want to make sure we're not over the Q3 software cap.</div>
-              <div class="feed-time">Jun 21, 2025 · 2:38 PM</div>
-            </div>
-          </div>
-
-          <div class="feed-item">
-            <div class="feed-avatar av-system">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 7h10M8 4l3 3-3 3"/></svg>
-            </div>
-            <div class="feed-content">
-              <div class="feed-text">Reminder sent to <strong>Emily Carter</strong> — 11 days until due date</div>
-              <div class="feed-time">Jun 22, 2025 · 9:00 AM · Automated</div>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="comment-compose">
-          <div class="compose-avatar">AG</div>
-          <textarea class="compose-input" placeholder="Add a comment or note visible to all approvers…" rows="2"></textarea>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- RIGHT — Details panel (sticky) -->
-    <div class="right-col">
-
-      <!-- Vendor + cost -->
-      <div class="card">
-        <div class="vendor-hero">
-          <div class="vendor-row">
-            <div class="vendor-logo">
-              <svg viewBox="0 0 24 24"><path d="M22.4 13.4c-.4-1.4-1.5-2.5-2.9-2.8C19 7.5 16 5 12.4 5 9.5 5 7 6.6 5.6 9c-2.5.3-4.4 2.4-4.4 5 0 2.8 2.2 5 5 5h15c2.2 0 4-1.8 4-4 0-1.2-.5-2.3-1.3-3-.1-.2-.3-.4-.5-.6z"/></svg>
+          <div class="flex items-start gap-3 px-5 py-4 border-b border-black/[.08] hover:bg-[#F0EFE9] transition-colors">
+            <div class="w-8 h-8 rounded-full bg-[#F0EFE9] border border-[#E8E7E0] flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3.5 h-3.5 text-[#9E9D96]" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M7 4v3l2 2"/></svg>
             </div>
             <div>
-              <div class="vendor-name">HubSpot</div>
-              <div class="vendor-cat">CRM · Marketing software</div>
+              <p class="text-[12px]">Workflow assigned — approval routed to <strong class="font-medium">Emily Carter</strong> (Manager)</p>
+              <p class="text-[11px] text-[#9E9D96] mt-1">Jun 19, 2025 · 9:14 AM · Automated</p>
             </div>
           </div>
-          <div class="cost-hero">
-            <div class="cost-left">
-              <div class="cost-eyebrow">Estimated cost</div>
-              <div class="cost-value">$7,499</div>
-              <div class="cost-sub">Annual · Marketing dept.</div>
+          <div class="flex items-start gap-3 px-5 py-4 border-b border-black/[.08] hover:bg-[#F0EFE9] transition-colors">
+            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-[11px] font-medium text-blue-800 flex-shrink-0 mt-0.5">EC</div>
+            <div>
+              <p class="text-[12px]"><strong class="font-medium">Emily Carter</strong> opened the request</p>
+              <div class="mt-2 bg-[#F0EFE9] rounded-lg px-3 py-2 text-[12px] text-[#6B6960] leading-relaxed">Looks reasonable. Checking with finance on budget availability before I approve.</div>
+              <p class="text-[11px] text-[#9E9D96] mt-1">Jun 21, 2025 · 2:38 PM</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 px-5 py-4 hover:bg-[#F0EFE9] transition-colors">
+            <div class="w-8 h-8 rounded-full bg-[#F0EFE9] border border-[#E8E7E0] flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3.5 h-3.5 text-[#9E9D96]" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 7h10M8 4l3 3-3 3"/></svg>
+            </div>
+            <div>
+              <p class="text-[12px]">Reminder sent to <strong class="font-medium">Emily Carter</strong> — 11 days until due date</p>
+              <p class="text-[11px] text-[#9E9D96] mt-1">Jun 22, 2025 · 9:00 AM · Automated</p>
             </div>
           </div>
         </div>
-        <div class="urgency-strip" id="urgency-strip">
-          <div class="urgency-dot"></div>
-          <div class="urgency-text">Emily Carter's approval needed · 11 days left</div>
+        <div class="flex gap-2.5 items-start px-5 py-4 border-t border-black/[.08]">
+          <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-[10px] font-medium text-purple-800 flex-shrink-0 mt-0.5">AG</div>
+          <textarea class="flex-1 text-[12px] px-3 py-2 border border-black/10 rounded-lg bg-white placeholder-[#9E9D96] resize-none outline-none focus:border-blue-300 transition-colors min-h-[36px]" placeholder="Add a comment visible to all approvers…" rows="2"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT — Details panel -->
+    <div class="flex flex-col gap-3.5 sticky top-[calc(3.5rem+1.75rem)]">
+
+      <!-- Vendor + cost -->
+      <div class="bg-white rounded-2xl border border-black/[.08] overflow-hidden fade-1">
+        <div class="p-4 border-b border-black/[.08]">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-xl bg-[#FF7A59] flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 fill-white" viewBox="0 0 24 24"><path d="M22.4 13.4c-.4-1.4-1.5-2.5-2.9-2.8C19 7.5 16 5 12.4 5 9.5 5 7 6.6 5.6 9c-2.5.3-4.4 2.4-4.4 5 0 2.8 2.2 5 5 5h15c2.2 0 4-1.8 4-4 0-1.2-.5-2.3-1.3-3-.1-.2-.3-.4-.5-.6z"/></svg>
+            </div>
+            <div>
+              <p class="text-[15px] font-medium tracking-tight">HubSpot</p>
+              <p class="text-[11px] text-[#9E9D96]">CRM · Marketing software</p>
+            </div>
+          </div>
+          <div class="bg-[#F0EFE9] rounded-xl px-4 py-3">
+            <p class="text-[10px] font-medium uppercase tracking-widest text-[#9E9D96] mb-1">Estimated cost</p>
+            <p class="text-[24px] font-medium font-mono tracking-tight">$7,499</p>
+            <p class="text-[11px] text-[#9E9D96] mt-0.5">Annual · Marketing dept.</p>
+          </div>
+        </div>
+        <div id="urgency" class="flex items-center gap-2 px-4 py-2.5 bg-amber-50 border-t border-amber-100">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></span>
+          <span class="text-[11px] font-medium text-amber-800 leading-snug">Emily Carter's approval needed · 11 days left</span>
         </div>
       </div>
 
-      <!-- Request details -->
-      <div class="card">
-        <div class="detail-section">
-          <div class="section-eyebrow">Business justification</div>
-          <div class="justification-text">HubSpot allows the marketing team to manage campaigns, automate emails, and track performance metrics in one place. Currently split across three tools, creating manual overhead and reporting delays.</div>
+      <!-- Details -->
+      <div class="bg-white rounded-2xl border border-black/[.08] overflow-hidden fade-2">
+        <div class="px-4 py-4 border-b border-black/[.08]">
+          <p class="text-[10px] font-medium uppercase tracking-widest text-[#9E9D96] mb-2">Business justification</p>
+          <p class="text-[12px] leading-relaxed">HubSpot allows the marketing team to manage campaigns, automate emails, and track metrics in one place. Currently split across three tools, creating manual overhead and reporting delays.</p>
         </div>
-        <div class="detail-section">
-          <div class="section-eyebrow">Request details</div>
-          <div class="meta-row"><span class="meta-key">Requested by</span><span class="meta-val">Alex Garcia</span></div>
-          <div class="meta-row"><span class="meta-key">Department</span><span class="meta-val">Marketing</span></div>
-          <div class="meta-row"><span class="meta-key">Submitted</span><span class="meta-val">Jun 19, 2025</span></div>
-          <div class="meta-row"><span class="meta-key">Access needed</span><span class="meta-val">Jun 30, 2025</span></div>
-          <div class="meta-row"><span class="meta-key">Workflow</span><span class="meta-val">Software</span></div>
-          <div class="meta-row"><span class="meta-key">Contract type</span><span class="meta-val">New</span></div>
+        <div class="px-4 py-4 border-b border-black/[.08]">
+          <p class="text-[10px] font-medium uppercase tracking-widest text-[#9E9D96] mb-2">Request details</p>
+          <div class="divide-y divide-black/[.06]">
+            <div class="flex justify-between py-1.5 text-[12px]"><span class="text-[#9E9D96]">Requested by</span><span class="font-medium">Alex Garcia</span></div>
+            <div class="flex justify-between py-1.5 text-[12px]"><span class="text-[#9E9D96]">Department</span><span class="font-medium">Marketing</span></div>
+            <div class="flex justify-between py-1.5 text-[12px]"><span class="text-[#9E9D96]">Submitted</span><span class="font-medium">Jun 19, 2025</span></div>
+            <div class="flex justify-between py-1.5 text-[12px]"><span class="text-[#9E9D96]">Access needed</span><span class="font-medium">Jun 30, 2025</span></div>
+            <div class="flex justify-between py-1.5 text-[12px]"><span class="text-[#9E9D96]">Contract type</span><span class="font-medium">New</span></div>
+          </div>
         </div>
-        <div class="detail-section">
-          <div class="section-eyebrow">Additional context</div>
-          <div class="meta-row"><span class="meta-key">Users affected</span><span class="meta-val">8 (Marketing)</span></div>
-          <div class="meta-row"><span class="meta-key">Integration</span><span class="meta-val">Salesforce CRM</span></div>
-          <div class="meta-row"><span class="meta-key">Replacing</span><span class="meta-val">3 tools</span></div>
+        <div class="px-4 py-4 border-b border-black/[.08]">
+          <p class="text-[10px] font-medium uppercase tracking-widest text-[#9E9D96] mb-2">Additional context</p>
+          <div class="divide-y divide-black/[.06]">
+            <div class="flex justify-between py-1.5 text-[12px]"><span class="text-[#9E9D96]">Users affected</span><span class="font-medium">8 (Marketing)</span></div>
+            <div class="flex justify-between py-1.5 text-[12px]"><span class="text-[#9E9D96]">Integration</span><span class="font-medium">Salesforce CRM</span></div>
+            <div class="flex justify-between py-1.5 text-[12px]"><span class="text-[#9E9D96]">Replacing</span><span class="font-medium">3 tools</span></div>
+          </div>
         </div>
-        <div class="detail-section">
-          <div class="section-eyebrow">Attachments</div>
-          <div class="upload-area">
-            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12V4M6 7l3-3 3 3"/><rect x="2" y="13" width="14" height="3" rx="1.5" opacity=".4"/></svg>
+        <div class="px-4 py-4">
+          <p class="text-[10px] font-medium uppercase tracking-widest text-[#9E9D96] mb-2">Attachments</p>
+          <div class="border-2 border-dashed border-black/10 rounded-xl p-4 text-center text-[#9E9D96] text-[11px] cursor-pointer hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+            <svg class="w-4 h-4 mx-auto mb-1 opacity-50" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12V4M6 7l3-3 3 3"/><rect x="2" y="13" width="14" height="3" rx="1.5" opacity=".4"/></svg>
             Add attachment
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </main>
 
-<!-- Toast -->
-<div id="toast" style="
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:var(--text-primary);color:var(--text-inverse);
-  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
-  padding:10px 18px;border-radius:8px;
-  opacity:0;transition:opacity .2s,transform .2s;
-  pointer-events:none;white-space:nowrap;z-index:999;
-"></div>
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-4 bg-[#1A1916] text-white text-[13px] font-medium px-4 py-2.5 rounded-xl opacity-0 transition-all duration-200 pointer-events-none whitespace-nowrap z-50"></div>
 
 <script>
-  function toast(msg, duration = 2800) {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.style.opacity = '1';
-    el.style.transform = 'translateX(-50%) translateY(0)';
-    setTimeout(() => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateX(-50%) translateY(8px)';
-    }, duration);
-  }
-
-  function handleApprove() {
-    const zone = document.getElementById('action-zone');
-    zone.style.background = 'var(--green-light)';
-    zone.style.borderColor = 'rgba(82,183,136,.3)';
-    zone.innerHTML = `
-      <div class="az-eyebrow" style="color:var(--green)">Step approved</div>
-      <div class="az-who" style="color:var(--green)">Approved by <strong>Emily Carter</strong>. Request is now advancing to Jason Brooks for finance approval.</div>
-    `;
-    document.querySelector('.icon-active').className = 'tl-icon icon-done';
-    document.querySelector('.icon-active').innerHTML = '<svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3" stroke="var(--green)" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    document.querySelector('.tl-state.state-active').textContent = 'Completed';
-    document.querySelector('.tl-state.state-active').className = 'tl-state state-done';
-    document.querySelector('.conn-dashed').className = 'tl-connector conn-done';
-    document.getElementById('progress-bar').style.width = '40%';
-    document.getElementById('progress-pct').textContent = '40%';
-    document.getElementById('urgency-strip').style.display = 'none';
-
-    // Add feed item
-    const feed = document.querySelector('.activity-feed');
-    const newItem = document.createElement('div');
-    newItem.className = 'feed-item';
-    newItem.style.background = 'var(--green-light)';
-    newItem.innerHTML = `
-      <div class="feed-avatar av-green">EC</div>
-      <div class="feed-content">
-        <div class="feed-text"><strong>Emily Carter</strong> approved the request — advancing to finance</div>
-        <div class="feed-time">Just now</div>
-      </div>
-    `;
-    feed.insertBefore(newItem, feed.firstChild);
-    setTimeout(() => newItem.style.background = '', 2000);
-    toast('Step approved — request advanced to Jason Brooks');
-  }
-
-  function handleReject() {
-    toast('Rejection flow — reason required before submitting');
-  }
-
-  function setTab(el) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-  }
-
-  setTimeout(() => {
-    document.getElementById('progress-bar').style.width = '20%';
-  }, 500);
+function toast(msg,dur=2800){const el=document.getElementById('toast');el.textContent=msg;el.style.opacity='1';el.style.transform='translateX(-50%) translateY(0)';setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(-50%) translateY(8px)';},dur);}
+function handleApprove(){
+  const zone=document.getElementById('action-zone');
+  zone.className='mx-4 mb-4 bg-emerald-50 border border-emerald-200 rounded-xl p-4';
+  zone.innerHTML='<p class="text-[9px] font-medium uppercase tracking-widest text-emerald-700 mb-1.5">Step approved</p><p class="text-[12px] text-emerald-800">Approved by <strong class="font-medium">Emily Carter</strong>. Request advancing to Jason Brooks for finance approval.</p>';
+  const icon=document.getElementById('active-icon');
+  icon.className='w-7 h-7 rounded-full bg-emerald-50 border-[1.5px] border-emerald-400 flex items-center justify-center z-10';
+  icon.innerHTML='<svg class="w-3 h-3 stroke-emerald-700" viewBox="0 0 12 12" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>';
+  document.getElementById('active-state').textContent='Completed';
+  document.getElementById('active-state').className='text-[9px] font-medium uppercase tracking-widest text-emerald-700 mb-0.5';
+  document.getElementById('bar').style.width='40%';
+  document.getElementById('pct').textContent='40%';
+  document.getElementById('urgency').style.display='none';
+  const feed=document.getElementById('feed');
+  const item=document.createElement('div');
+  item.className='flex items-start gap-3 px-5 py-4 border-b border-black/[.08] bg-emerald-50 transition-colors';
+  item.innerHTML='<div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-[11px] font-medium text-emerald-800 flex-shrink-0 mt-0.5">EC</div><div><p class="text-[12px]"><strong class="font-medium">Emily Carter</strong> approved the request — advancing to finance</p><p class="text-[11px] text-[#9E9D96] mt-1">Just now</p></div>';
+  feed.insertBefore(item,feed.firstChild);
+  setTimeout(()=>item.className='flex items-start gap-3 px-5 py-4 border-b border-black/[.08] hover:bg-[#F0EFE9] transition-colors',2000);
+  toast('Step approved — request advanced to Jason Brooks');
+}
+function setTab(el){document.querySelectorAll('.tab-btn').forEach(t=>{t.className='tab-btn text-[12px] font-medium px-4 py-2.5 text-[#9E9D96] border-b-2 border-transparent -mb-px hover:text-[#1A1916] transition-colors cursor-pointer';});el.className='tab-btn text-[12px] font-medium px-4 py-2.5 text-[#1A1916] border-b-2 border-[#1A1916] -mb-px cursor-pointer';}
+setTimeout(()=>{document.getElementById('bar').style.width='20%';},500);
 </script>
 </body>
 </html>

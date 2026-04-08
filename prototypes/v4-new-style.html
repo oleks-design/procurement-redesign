@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Procurement — Requests</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+      colors: {
+        sidebar: '#E9EEF6',
+        'sidebar-hover': '#DCE4F0',
+        'sidebar-active': '#2563EB',
+        canvas: '#F0F4FA',
+        surface: '#FFFFFF',
+        ink: { DEFAULT: '#0F172A', 2: '#475569', 3: '#94A3B8', 4: '#CBD5E1' },
+        brand: '#2563EB',
+      }
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #F0F4FA; font-family: 'Inter', sans-serif; color: #0F172A; }
+  .screen { display: none; }
+  .screen.active { display: flex; min-height: 100vh; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn .25s ease both; }
+  .fade-1 { animation: fadeIn .3s ease .05s both; }
+  .fade-2 { animation: fadeIn .3s ease .1s both; }
+  .fade-3 { animation: fadeIn .3s ease .15s both; }
+  .fade-4 { animation: fadeIn .3s ease .2s both; }
+  .row-link { transition: background .12s; cursor: pointer; }
+  .row-link:hover { background: #F8FAFF; }
+  .row-urgent:hover { background: #F0F6FF; }
+  @keyframes pulse-ring { 0%,100%{ box-shadow: 0 0 0 0 rgba(37,99,235,.3); } 50%{ box-shadow: 0 0 0 4px rgba(37,99,235,.08); } }
+  .pulse { animation: pulse-ring 2s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 1 — REQUESTS OVERVIEW
+═══════════════════════════════════════ -->
+<div id="s-overview" class="screen active">
+
+  <!-- Full-width app shell -->
+  <div class="flex w-full min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-[220px] flex-shrink-0 flex flex-col" style="background:#E9EEF6; min-height:100vh;">
+
+      <!-- Top bar within sidebar -->
+      <div class="flex items-center gap-2.5 px-4 h-14">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background:#2563EB;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 3v10M3 8h10" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="text-[14px] font-semibold text-[#0F172A] tracking-tight">Procurement</span>
+        <svg class="w-4 h-4 text-[#64748B] ml-auto" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
+      </div>
+
+      <!-- Nav -->
+      <nav class="px-3 pt-2 flex-1">
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#475569] text-[13px] font-medium hover:bg-[#DCE4F0] transition-colors mb-0.5 group">
+          <svg class="w-[18px] h-[18px] opacity-70" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 10h4M2 5h6M2 15h3"/><rect x="8" y="3" width="10" height="6" rx="1.5"/><rect x="10" y="12" width="8" height="5" rx="1.5"/></svg>
+          Insights
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium mb-0.5" style="background:#2563EB; color:white;">
+          <svg class="w-[18px] h-[18px]" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="2" width="14" height="17" rx="2"/><path d="M7 7h6M7 11h4"/></svg>
+          Requests
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#475569] text-[13px] font-medium hover:bg-[#DCE4F0] transition-colors mb-0.5">
+          <svg class="w-[18px] h-[18px] opacity-70" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="5" width="16" height="12" rx="2"/><path d="M6 5V4a2 2 0 012-2h4a2 2 0 012 2v1M8 11h4"/></svg>
+          Purchase orders
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#475569] text-[13px] font-medium hover:bg-[#DCE4F0] transition-colors mb-0.5">
+          <svg class="w-[18px] h-[18px] opacity-70" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="6" r="3"/><path d="M2 17c0-3.314 2.686-6 6-6s6 2.686 6 6"/><path d="M14 9a3 3 0 000-6M18 17c0-2.761-1.791-5-4-5.5"/></svg>
+          Vendors
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#475569] text-[13px] font-medium hover:bg-[#DCE4F0] transition-colors mb-0.5">
+          <svg class="w-[18px] h-[18px] opacity-70" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 6v4l3 3"/></svg>
+          Spend programs
+        </a>
+      </nav>
+
+      <!-- Collapse -->
+      <div class="px-4 pb-5 pt-2">
+        <button class="flex items-center gap-2 text-[12px] text-[#64748B] hover:text-[#0F172A] transition-colors cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 3H3v10h7M6 8h8M11 5l3 3-3 3"/></svg>
+          Collapse
+        </button>
+      </div>
+    </aside>
+
+    <!-- Right panel -->
+    <div class="flex-1 flex flex-col">
+
+      <!-- Top bar -->
+      <div class="h-14 flex items-center justify-end px-6" style="background:#E9EEF6;">
+        <button class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-[#DCE4F0] transition-colors cursor-pointer">
+          <div class="w-7 h-7 rounded-full overflow-hidden bg-[#CBD5E1] flex items-center justify-center text-[11px] font-semibold text-[#475569]">SX</div>
+          <span class="text-[13px] font-medium text-[#0F172A]">SpaceX</span>
+          <svg class="w-4 h-4 text-[#64748B]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
+        </button>
+      </div>
+
+      <!-- White content card -->
+      <div class="flex-1 m-0" style="background:white; border-radius: 12px 0 0 0;">
+        <div class="px-8 pt-8 pb-6">
+
+          <!-- Page header -->
+          <div class="flex items-center justify-between mb-1 fade-1">
+            <h1 class="text-[26px] font-semibold tracking-tight">Requests</h1>
+            <button class="flex items-center gap-2 px-4 py-2 rounded-lg text-[13px] font-medium text-white transition-colors cursor-pointer" style="background:#2563EB;" onmouseover="this.style.background='#1D4ED8'" onmouseout="this.style.background='#2563EB'">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M7 1v12M1 7h12"/></svg>
+              New request
+            </button>
+          </div>
+          <div class="border-b border-[#E2E8F0] mb-7 fade-1"></div>
+
+          <!-- Stat row -->
+          <div class="grid grid-cols-4 gap-4 mb-8 fade-2">
+            <div class="rounded-xl border border-[#E2E8F0] px-5 py-4">
+              <p class="text-[11px] font-medium uppercase tracking-widest text-[#94A3B8] mb-2">Total requests</p>
+              <p class="text-[28px] font-semibold font-mono tracking-tight">24</p>
+              <p class="text-[12px] text-[#94A3B8] mt-1">This quarter</p>
+            </div>
+            <div class="rounded-xl border border-[#FEF3C7] px-5 py-4" style="background:#FFFBEB;">
+              <p class="text-[11px] font-medium uppercase tracking-widest text-[#92400E] mb-2">Needs review</p>
+              <div class="flex items-baseline gap-2">
+                <p class="text-[28px] font-semibold font-mono tracking-tight text-[#B45309]">8</p>
+                <span class="text-[11px] font-medium text-[#92400E] bg-amber-100 px-2 py-0.5 rounded-full">Urgent</span>
+              </div>
+              <p class="text-[12px] text-[#92400E] mt-1 opacity-70">Awaiting approval</p>
+            </div>
+            <div class="rounded-xl border border-[#DCFCE7] px-5 py-4" style="background:#F0FDF4;">
+              <p class="text-[11px] font-medium uppercase tracking-widest text-[#166534] mb-2">Approved</p>
+              <div class="flex items-baseline gap-2">
+                <p class="text-[28px] font-semibold font-mono tracking-tight text-[#15803D]">14</p>
+                <span class="text-[11px] font-medium text-[#166534] bg-green-100 px-2 py-0.5 rounded-full">+3 this week</span>
+              </div>
+              <p class="text-[12px] text-[#166534] mt-1 opacity-70">Fully signed off</p>
+            </div>
+            <div class="rounded-xl border border-[#E2E8F0] px-5 py-4">
+              <p class="text-[11px] font-medium uppercase tracking-widest text-[#94A3B8] mb-2">Total spend</p>
+              <p class="text-[28px] font-semibold font-mono tracking-tight">$94k</p>
+              <p class="text-[12px] text-[#94A3B8] mt-1">Approved this quarter</p>
+            </div>
+          </div>
+
+          <!-- Needs review section -->
+          <div class="mb-8 fade-3">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[14px] font-semibold">Needs your review</p>
+              <span class="text-[12px] text-[#94A3B8]">3 requests</span>
+            </div>
+            <div class="rounded-xl border border-[#E2E8F0] overflow-hidden">
+              <!-- Table header -->
+              <div class="grid grid-cols-[2.5fr_1fr_1fr_1fr_130px] px-5 py-3 border-b border-[#F1F5F9]" style="background:#F8FAFC;">
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">Vendor / Request</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">Requested by</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">Amount</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">Due date</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">Status</p>
+              </div>
+
+              <!-- HubSpot row — clickable -->
+              <div onclick="goToDetail()" class="grid grid-cols-[2.5fr_1fr_1fr_1fr_130px] px-5 py-4 border-b border-[#F1F5F9] row-urgent items-center group cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#FF7A59;">
+                    <svg class="w-5 h-5 fill-white" viewBox="0 0 24 24"><path d="M22.4 13.4c-.4-1.4-1.5-2.5-2.9-2.8C19 7.5 16 5 12.4 5 9.5 5 7 6.6 5.6 9c-2.5.3-4.4 2.4-4.4 5 0 2.8 2.2 5 5 5h15c2.2 0 4-1.8 4-4 0-1.2-.5-2.3-1.3-3-.1-.2-.3-.4-.5-.6z"/></svg>
+                  </div>
+                  <div>
+                    <p class="text-[13px] font-semibold group-hover:text-[#2563EB] transition-colors">HubSpot <span class="text-[#94A3B8] font-normal">— Annual license</span></p>
+                    <p class="text-[11px] text-[#94A3B8] mt-0.5">Software · Marketing</p>
+                  </div>
+                  <span class="text-[11px] font-medium text-[#2563EB] bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-full ml-2 opacity-0 group-hover:opacity-100 transition-opacity">View →</span>
+                </div>
+                <div>
+                  <p class="text-[13px] font-medium">Alex Garcia</p>
+                  <p class="text-[11px] text-[#94A3B8]">Jun 19, 2025</p>
+                </div>
+                <p class="text-[13px] font-semibold font-mono">$7,499</p>
+                <div>
+                  <p class="text-[13px] font-medium text-[#B45309]">Jun 30, 2025</p>
+                  <p class="text-[11px] text-[#94A3B8]">11 days left</p>
+                </div>
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 rounded-full border w-fit" style="background:#FFFBEB; color:#92400E; border-color:#FDE68A;">
+                  <span class="w-1.5 h-1.5 rounded-full" style="background:#F59E0B;"></span>In progress
+                </span>
+              </div>
+
+              <!-- Figma row -->
+              <div class="grid grid-cols-[2.5fr_1fr_1fr_1fr_130px] px-5 py-4 border-b border-[#F1F5F9] row-link items-center">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#0052CC;">
+                    <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 6a4 4 0 110 8 4 4 0 010-8z"/></svg>
+                  </div>
+                  <div>
+                    <p class="text-[13px] font-semibold">Figma Organization <span class="text-[#94A3B8] font-normal">— Team plan</span></p>
+                    <p class="text-[11px] text-[#94A3B8] mt-0.5">Software · Design</p>
+                  </div>
+                </div>
+                <div><p class="text-[13px] font-medium">Sarah Kim</p><p class="text-[11px] text-[#94A3B8]">Jun 20, 2025</p></div>
+                <p class="text-[13px] font-semibold font-mono">$3,600</p>
+                <div><p class="text-[13px] font-medium text-[#B45309]">Jul 1, 2025</p><p class="text-[11px] text-[#94A3B8]">12 days left</p></div>
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 rounded-full border w-fit" style="background:#FFFBEB; color:#92400E; border-color:#FDE68A;"><span class="w-1.5 h-1.5 rounded-full" style="background:#F59E0B;"></span>In progress</span>
+              </div>
+
+              <!-- Slack row -->
+              <div class="grid grid-cols-[2.5fr_1fr_1fr_1fr_130px] px-5 py-4 row-link items-center">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#E01E5A;">
+                    <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24"><path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.528 2.528 0 012.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z"/></svg>
+                  </div>
+                  <div>
+                    <p class="text-[13px] font-semibold">Slack Pro <span class="text-[#94A3B8] font-normal">— Business+</span></p>
+                    <p class="text-[11px] text-[#94A3B8] mt-0.5">Software · Operations</p>
+                  </div>
+                </div>
+                <div><p class="text-[13px] font-medium">Marcus Lee</p><p class="text-[11px] text-[#94A3B8]">Jun 22, 2025</p></div>
+                <p class="text-[13px] font-semibold font-mono">$12,000</p>
+                <div><p class="text-[13px] font-medium">Jul 15, 2025</p><p class="text-[11px] text-[#94A3B8]">26 days left</p></div>
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 rounded-full border w-fit" style="background:#FFFBEB; color:#92400E; border-color:#FDE68A;"><span class="w-1.5 h-1.5 rounded-full" style="background:#F59E0B;"></span>In progress</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- All requests -->
+          <div class="fade-4">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[14px] font-semibold">All requests</p>
+              <div class="flex items-center gap-1.5">
+                <button class="text-[12px] font-medium px-3 py-1.5 rounded-lg text-white cursor-pointer" style="background:#2563EB;">All</button>
+                <button class="text-[12px] font-medium px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-[#475569] hover:bg-[#F8FAFC] transition-colors cursor-pointer">Software</button>
+                <button class="text-[12px] font-medium px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-[#475569] hover:bg-[#F8FAFC] transition-colors cursor-pointer">Hardware</button>
+                <button class="text-[12px] font-medium px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-[#475569] hover:bg-[#F8FAFC] transition-colors cursor-pointer">Services</button>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[#E2E8F0] overflow-hidden">
+              <div class="grid grid-cols-[2.5fr_1fr_1fr_1fr_130px] px-5 py-3 border-b border-[#F1F5F9]" style="background:#F8FAFC;">
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">Vendor / Request</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">Requested by</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">Amount</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">Submitted</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">Status</p>
+              </div>
+              <div class="grid grid-cols-[2.5fr_1fr_1fr_1fr_130px] px-5 py-4 border-b border-[#F1F5F9] row-link items-center">
+                <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-white text-[11px] font-bold" style="background:#4285F4;">GW</div><div><p class="text-[13px] font-semibold">Google Workspace <span class="text-[#94A3B8] font-normal">— Business</span></p><p class="text-[11px] text-[#94A3B8]">Software · All teams</p></div></div>
+                <div><p class="text-[13px] font-medium">IT Admin</p><p class="text-[11px] text-[#94A3B8]">May 2, 2025</p></div>
+                <p class="text-[13px] font-semibold font-mono">$18,000</p>
+                <p class="text-[13px] text-[#94A3B8]">May 2, 2025</p>
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 rounded-full border w-fit" style="background:#F0FDF4; color:#166534; border-color:#BBF7D0;"><span class="w-1.5 h-1.5 rounded-full" style="background:#22C55E;"></span>Approved</span>
+              </div>
+              <div class="grid grid-cols-[2.5fr_1fr_1fr_1fr_130px] px-5 py-4 border-b border-[#F1F5F9] row-link items-center">
+                <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-white text-[11px] font-bold" style="background:#FF9900;">AWS</div><div><p class="text-[13px] font-semibold">AWS Infrastructure <span class="text-[#94A3B8] font-normal">— Enterprise</span></p><p class="text-[11px] text-[#94A3B8]">Cloud · Engineering</p></div></div>
+                <div><p class="text-[13px] font-medium">Dev Team</p><p class="text-[11px] text-[#94A3B8]">May 10, 2025</p></div>
+                <p class="text-[13px] font-semibold font-mono">$24,000</p>
+                <p class="text-[13px] text-[#94A3B8]">May 10, 2025</p>
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 rounded-full border w-fit" style="background:#F0FDF4; color:#166534; border-color:#BBF7D0;"><span class="w-1.5 h-1.5 rounded-full" style="background:#22C55E;"></span>Approved</span>
+              </div>
+              <div class="grid grid-cols-[2.5fr_1fr_1fr_1fr_130px] px-5 py-4 border-b border-[#F1F5F9] row-link items-center">
+                <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-white text-[11px] font-bold" style="background:#172B4D;">JR</div><div><p class="text-[13px] font-semibold">Jira Software <span class="text-[#94A3B8] font-normal">— Standard</span></p><p class="text-[11px] text-[#94A3B8]">Software · Product</p></div></div>
+                <div><p class="text-[13px] font-medium">Priya Nair</p><p class="text-[11px] text-[#94A3B8]">May 18, 2025</p></div>
+                <p class="text-[13px] font-semibold font-mono">$4,200</p>
+                <p class="text-[13px] text-[#94A3B8]">May 18, 2025</p>
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 rounded-full border w-fit" style="background:#F0FDF4; color:#166534; border-color:#BBF7D0;"><span class="w-1.5 h-1.5 rounded-full" style="background:#22C55E;"></span>Approved</span>
+              </div>
+              <div class="grid grid-cols-[2.5fr_1fr_1fr_1fr_130px] px-5 py-4 row-link items-center">
+                <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-white text-[11px] font-bold" style="background:#7C3AED;">LM</div><div><p class="text-[13px] font-semibold">Linear <span class="text-[#94A3B8] font-normal">— Business</span></p><p class="text-[11px] text-[#94A3B8]">Software · Engineering</p></div></div>
+                <div><p class="text-[13px] font-medium">Tom Walsh</p><p class="text-[11px] text-[#94A3B8]">Jun 3, 2025</p></div>
+                <p class="text-[13px] font-semibold font-mono">$2,400</p>
+                <p class="text-[13px] text-[#94A3B8]">Jun 3, 2025</p>
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 rounded-full border w-fit" style="background:#F0FDF4; color:#166534; border-color:#BBF7D0;"><span class="w-1.5 h-1.5 rounded-full" style="background:#22C55E;"></span>Approved</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SCREEN 2 — REQUEST DETAIL
+═══════════════════════════════════════ -->
+<div id="s-detail" class="screen">
+  <div class="flex w-full min-h-screen">
+
+    <!-- Sidebar (identical) -->
+    <aside class="w-[220px] flex-shrink-0 flex flex-col" style="background:#E9EEF6; min-height:100vh;">
+      <div class="flex items-center gap-2.5 px-4 h-14">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background:#2563EB;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </div>
+        <span class="text-[14px] font-semibold text-[#0F172A] tracking-tight">Procurement</span>
+        <svg class="w-4 h-4 text-[#64748B] ml-auto" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
+      </div>
+      <nav class="px-3 pt-2 flex-1">
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#475569] text-[13px] font-medium hover:bg-[#DCE4F0] transition-colors mb-0.5">
+          <svg class="w-[18px] h-[18px] opacity-70" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 10h4M2 5h6M2 15h3"/><rect x="8" y="3" width="10" height="6" rx="1.5"/><rect x="10" y="12" width="8" height="5" rx="1.5"/></svg>
+          Insights
+        </a>
+        <a href="#" onclick="goToOverview(); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium mb-0.5" style="background:#2563EB; color:white;">
+          <svg class="w-[18px] h-[18px]" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="2" width="14" height="17" rx="2"/><path d="M7 7h6M7 11h4"/></svg>
+          Requests
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#475569] text-[13px] font-medium hover:bg-[#DCE4F0] transition-colors mb-0.5">
+          <svg class="w-[18px] h-[18px] opacity-70" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="5" width="16" height="12" rx="2"/><path d="M6 5V4a2 2 0 012-2h4a2 2 0 012 2v1M8 11h4"/></svg>
+          Purchase orders
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#475569] text-[13px] font-medium hover:bg-[#DCE4F0] transition-colors mb-0.5">
+          <svg class="w-[18px] h-[18px] opacity-70" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="6" r="3"/><path d="M2 17c0-3.314 2.686-6 6-6s6 2.686 6 6"/><path d="M14 9a3 3 0 000-6M18 17c0-2.761-1.791-5-4-5.5"/></svg>
+          Vendors
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#475569] text-[13px] font-medium hover:bg-[#DCE4F0] transition-colors mb-0.5">
+          <svg class="w-[18px] h-[18px] opacity-70" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 6v4l3 3"/></svg>
+          Spend programs
+        </a>
+      </nav>
+      <div class="px-4 pb-5 pt-2">
+        <button class="flex items-center gap-2 text-[12px] text-[#64748B] hover:text-[#0F172A] transition-colors cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 3H3v10h7M6 8h8M11 5l3 3-3 3"/></svg>
+          Collapse
+        </button>
+      </div>
+    </aside>
+
+    <!-- Right panel -->
+    <div class="flex-1 flex flex-col">
+      <!-- Top bar -->
+      <div class="h-14 flex items-center justify-end px-6" style="background:#E9EEF6;">
+        <button class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-[#DCE4F0] transition-colors cursor-pointer">
+          <div class="w-7 h-7 rounded-full bg-[#CBD5E1] flex items-center justify-center text-[11px] font-semibold text-[#475569]">SX</div>
+          <span class="text-[13px] font-medium text-[#0F172A]">SpaceX</span>
+          <svg class="w-4 h-4 text-[#64748B]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
+        </button>
+      </div>
+
+      <!-- White content -->
+      <div class="flex-1" style="background:white; border-radius: 12px 0 0 0;">
+        <div class="px-8 pt-8 pb-10">
+
+          <!-- Breadcrumb + back -->
+          <div class="flex items-center gap-2 mb-5 fade-1">
+            <button onclick="goToOverview()" class="flex items-center gap-1.5 text-[13px] text-[#2563EB] hover:text-[#1D4ED8] transition-colors font-medium cursor-pointer">
+              <svg class="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12L6 8l4-4"/></svg>
+              Requests
+            </button>
+            <span class="text-[#CBD5E1] text-[14px]">/</span>
+            <span class="text-[13px] text-[#475569] font-medium">HubSpot — Software request</span>
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-medium px-3 py-0.5 rounded-full border ml-1" style="background:#FFFBEB; color:#92400E; border-color:#FDE68A;">
+              <span class="w-1.5 h-1.5 rounded-full" style="background:#F59E0B;"></span>In progress
+            </span>
+          </div>
+
+          <!-- Page title row -->
+          <div class="flex items-start justify-between mb-1 fade-1">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#FF7A59;">
+                <svg class="w-7 h-7 fill-white" viewBox="0 0 24 24"><path d="M22.4 13.4c-.4-1.4-1.5-2.5-2.9-2.8C19 7.5 16 5 12.4 5 9.5 5 7 6.6 5.6 9c-2.5.3-4.4 2.4-4.4 5 0 2.8 2.2 5 5 5h15c2.2 0 4-1.8 4-4 0-1.2-.5-2.3-1.3-3-.1-.2-.3-.4-.5-.6z"/></svg>
+              </div>
+              <div>
+                <h1 class="text-[24px] font-semibold tracking-tight">HubSpot</h1>
+                <p class="text-[13px] text-[#94A3B8] mt-0.5">CRM · Marketing software · Annual license</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="toast('Cancel request — confirmation required')" class="text-[13px] font-medium px-4 py-2 rounded-lg border border-[#FECACA] text-[#DC2626] hover:bg-[#FEF2F2] transition-colors cursor-pointer">Cancel request</button>
+              <button onclick="toast('Approve all steps — confirmation required')" class="text-[13px] font-medium px-4 py-2 rounded-lg text-white transition-colors cursor-pointer" style="background:#2563EB;" onmouseover="this.style.background='#1D4ED8'" onmouseout="this.style.background='#2563EB'">Approve all steps</button>
+            </div>
+          </div>
+          <div class="border-b border-[#E2E8F0] mb-7 fade-1"></div>
+
+          <!-- Two-column layout -->
+          <div class="grid grid-cols-[1fr_320px] gap-6">
+
+            <!-- Left -->
+            <div class="flex flex-col gap-5">
+
+              <!-- Cost + stats hero -->
+              <div class="rounded-xl border border-[#E2E8F0] overflow-hidden fade-2">
+                <div class="flex items-center justify-between px-6 py-5 border-b border-[#F1F5F9]">
+                  <div>
+                    <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-1.5">Estimated cost</p>
+                    <p class="text-[36px] font-semibold font-mono tracking-tight">$7,499</p>
+                    <p class="text-[12px] text-[#94A3B8] mt-1">Annual · Billed to Marketing department</p>
+                  </div>
+                  <div id="urgency-badge" class="flex flex-col items-end gap-2">
+                    <span class="inline-flex items-center gap-2 text-[12px] font-medium px-3 py-1.5 rounded-lg border" style="background:#FFFBEB; color:#92400E; border-color:#FDE68A;">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none" stroke="#92400E" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="5.5"/><path d="M7 4v3M7 9.5v.5"/></svg>
+                      Emily Carter's approval due in 11 days
+                    </span>
+                    <p class="text-[11px] text-[#94A3B8]">Deadline: Jun 30, 2025</p>
+                  </div>
+                </div>
+                <div class="grid grid-cols-4">
+                  <div class="px-5 py-4 border-r border-[#F1F5F9]">
+                    <p class="text-[10px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-1.5">Requested by</p>
+                    <p class="text-[13px] font-semibold">Alex Garcia</p>
+                    <p class="text-[11px] text-[#94A3B8] mt-0.5">Marketing</p>
+                  </div>
+                  <div class="px-5 py-4 border-r border-[#F1F5F9]">
+                    <p class="text-[10px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-1.5">Submitted</p>
+                    <p class="text-[13px] font-semibold">Jun 19, 2025</p>
+                    <p class="text-[11px] text-[#94A3B8] mt-0.5">6 days ago</p>
+                  </div>
+                  <div class="px-5 py-4 border-r border-[#F1F5F9]">
+                    <p class="text-[10px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-1.5">Access needed</p>
+                    <p class="text-[13px] font-semibold">Jun 30, 2025</p>
+                    <p class="text-[11px] text-[#94A3B8] mt-0.5">11 days away</p>
+                  </div>
+                  <div class="px-5 py-4">
+                    <p class="text-[10px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-1.5">Progress</p>
+                    <p class="text-[13px] font-semibold">1 of 5 steps</p>
+                    <p class="text-[11px] text-[#94A3B8] mt-0.5">Awaiting Emily Carter</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Justification -->
+              <div class="rounded-xl border border-[#E2E8F0] px-6 py-5 fade-3">
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-3">Business justification</p>
+                <p class="text-[14px] text-[#0F172A] leading-relaxed">HubSpot allows the marketing team to manage campaigns, automate emails, and track performance metrics in one place. Currently these workflows are split across three separate tools — Mailchimp, a spreadsheet, and Google Analytics — creating manual overhead and reporting gaps that delay campaign decisions by 2–3 days.</p>
+              </div>
+
+              <!-- Meta grid -->
+              <div class="grid grid-cols-2 gap-4 fade-3">
+                <div class="rounded-xl border border-[#E2E8F0] px-5 py-5">
+                  <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-3">Request details</p>
+                  <div class="divide-y divide-[#F1F5F9]">
+                    <div class="flex justify-between py-2 text-[13px]"><span class="text-[#94A3B8]">Workflow</span><span class="font-medium">Software</span></div>
+                    <div class="flex justify-between py-2 text-[13px]"><span class="text-[#94A3B8]">Department</span><span class="font-medium">Marketing</span></div>
+                    <div class="flex justify-between py-2 text-[13px]"><span class="text-[#94A3B8]">Vendor</span><span class="font-medium">HubSpot</span></div>
+                    <div class="flex justify-between py-2 text-[13px]"><span class="text-[#94A3B8]">Contract type</span><span class="font-medium">New</span></div>
+                  </div>
+                </div>
+                <div class="rounded-xl border border-[#E2E8F0] px-5 py-5">
+                  <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-3">Additional context</p>
+                  <div class="divide-y divide-[#F1F5F9]">
+                    <div class="flex justify-between py-2 text-[13px]"><span class="text-[#94A3B8]">Users affected</span><span class="font-medium">Marketing (8)</span></div>
+                    <div class="flex justify-between py-2 text-[13px]"><span class="text-[#94A3B8]">Integration</span><span class="font-medium">Salesforce CRM</span></div>
+                    <div class="flex justify-between py-2 text-[13px]"><span class="text-[#94A3B8]">Existing tool</span><span class="font-medium">Mailchimp</span></div>
+                    <div class="flex justify-between py-2 text-[13px]"><span class="text-[#94A3B8]">Replacing</span><span class="font-medium">3 tools</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Attachments -->
+              <div class="rounded-xl border border-[#E2E8F0] px-6 py-5 fade-4">
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-3">Attachments</p>
+                <div class="border-2 border-dashed border-[#E2E8F0] rounded-xl p-6 text-center text-[#94A3B8] text-[13px] cursor-pointer hover:border-[#2563EB] hover:bg-[#EFF6FF] hover:text-[#2563EB] transition-colors">
+                  <svg class="w-6 h-6 mx-auto mb-2 opacity-40" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13V5M7 8l3-3 3 3"/><rect x="2" y="14" width="16" height="4" rx="2" opacity=".4"/></svg>
+                  <span class="font-medium">Upload attachment</span>
+                  <p class="text-[12px] mt-0.5 opacity-70">PDF, DOCX, XLSX, PNG, JPG · Max 25 MB per file</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right — sticky approval panel -->
+            <div class="flex flex-col gap-4 sticky top-6" style="align-self: start;">
+
+              <!-- Approval workflow -->
+              <div class="rounded-xl border border-[#E2E8F0] overflow-hidden fade-2">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-[#F1F5F9]">
+                  <p class="text-[13px] font-semibold">Approval workflow</p>
+                  <p id="panel-meta" class="text-[11px] text-[#94A3B8] font-medium">1 / 5 completed</p>
+                </div>
+                <!-- Progress -->
+                <div class="px-5 py-3.5 border-b border-[#F1F5F9]">
+                  <div class="flex justify-between text-[11px] mb-2">
+                    <span class="text-[#94A3B8] font-medium">Progress</span>
+                    <span id="pct" class="font-semibold text-[#0F172A]">20%</span>
+                  </div>
+                  <div class="h-1.5 bg-[#F1F5F9] rounded-full overflow-hidden">
+                    <div id="bar" class="h-1.5 rounded-full transition-all duration-700" style="width:0%; background:#2563EB;"></div>
+                  </div>
+                </div>
+
+                <!-- Steps -->
+                <div class="py-3">
+                  <!-- Done -->
+                  <div class="flex items-stretch px-4">
+                    <div class="w-12 flex flex-col items-center flex-shrink-0 pt-3.5">
+                      <div class="w-7 h-7 rounded-full flex items-center justify-center z-10 flex-shrink-0" style="background:#DCFCE7; border: 1.5px solid #22C55E;">
+                        <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+                      </div>
+                      <div class="w-0.5 flex-1 bg-green-200 min-h-4"></div>
+                    </div>
+                    <div class="flex-1 pb-3 pt-3">
+                      <p class="text-[9px] font-semibold uppercase tracking-widest text-green-600 mb-0.5">Completed</p>
+                      <p class="text-[12px] font-semibold">Request submitted</p>
+                      <p class="text-[11px] text-[#94A3B8]">Alex Garcia · Jun 19</p>
+                    </div>
+                  </div>
+
+                  <!-- Active -->
+                  <div class="flex items-stretch px-4">
+                    <div class="w-12 flex flex-col items-center flex-shrink-0">
+                      <div class="w-0.5 h-3" style="background: repeating-linear-gradient(to bottom, #86EFAC 0, #86EFAC 4px, transparent 4px, transparent 8px);"></div>
+                      <div id="active-icon" class="w-7 h-7 rounded-full flex items-center justify-center z-10 flex-shrink-0 pulse" style="background:#EFF6FF; border: 2px solid #2563EB;">
+                        <div class="w-2.5 h-2.5 rounded-full" style="background:#2563EB;"></div>
+                      </div>
+                      <div class="w-0.5 flex-1 bg-[#E2E8F0] min-h-4"></div>
+                    </div>
+                    <div class="flex-1 py-2.5">
+                      <p id="active-state" class="text-[9px] font-semibold uppercase tracking-widest text-[#2563EB] mb-0.5">Awaiting action</p>
+                      <p class="text-[12px] font-semibold">Manager approval</p>
+                      <p class="text-[11px] text-[#94A3B8]">Emily Carter · 11 days</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Action zone -->
+                <div id="action-zone" class="mx-4 mb-4 rounded-xl p-4" style="background:#EFF6FF; border: 1px solid #BFDBFE;">
+                  <p class="text-[9px] font-semibold uppercase tracking-widest text-[#2563EB] mb-1.5">Your action required</p>
+                  <p class="text-[12px] text-[#0F172A] mb-3 leading-relaxed">You are reviewing as <strong class="font-semibold">Emily Carter</strong>. Approve, reject, or reassign this request.</p>
+                  <div class="flex gap-2">
+                    <button onclick="handleApprove()" class="flex-1 text-[12px] font-semibold py-2 rounded-lg transition-colors cursor-pointer" style="background:#DCFCE7; color:#166534; border: 1px solid #BBF7D0;" onmouseover="this.style.background='#BBF7D0'" onmouseout="this.style.background='#DCFCE7'">Approve</button>
+                    <button onclick="toast('Rejection flow — reason required')" class="flex-1 text-[12px] font-semibold py-2 rounded-lg transition-colors cursor-pointer" style="background:#FEE2E2; color:#DC2626; border: 1px solid #FECACA;" onmouseover="this.style.background='#FECACA'" onmouseout="this.style.background='#FEE2E2'">Reject</button>
+                    <button onclick="toast('Reassign panel would open')" class="text-[12px] font-semibold py-2 px-3 rounded-lg border border-[#E2E8F0] text-[#475569] hover:bg-[#F8FAFC] transition-colors cursor-pointer">Reassign</button>
+                  </div>
+                </div>
+
+                <div class="border-t border-[#F1F5F9] mx-4"></div>
+
+                <!-- Pending steps -->
+                <div class="py-3">
+                  <div class="flex items-stretch px-4">
+                    <div class="w-12 flex flex-col items-center flex-shrink-0 pt-2">
+                      <div class="w-0.5 h-3 bg-[#E2E8F0]"></div>
+                      <div class="w-7 h-7 rounded-full flex items-center justify-center z-10 flex-shrink-0" style="background:#F8FAFC; border: 1.5px solid #E2E8F0;"><div class="w-2 h-2 rounded-full bg-[#CBD5E1]"></div></div>
+                      <div class="w-0.5 flex-1 bg-[#E2E8F0] min-h-4"></div>
+                    </div>
+                    <div class="flex-1 py-2"><p class="text-[9px] font-semibold uppercase tracking-widest text-[#94A3B8] mb-0.5">Upcoming</p><p class="text-[12px] font-semibold">Finance approval</p><p class="text-[11px] text-[#94A3B8]">Jason Brooks</p></div>
+                  </div>
+                  <div class="flex items-stretch px-4">
+                    <div class="w-12 flex flex-col items-center flex-shrink-0 pt-1">
+                      <div class="w-0.5 h-2 bg-[#E2E8F0]"></div>
+                      <div class="w-7 h-7 rounded-full flex items-center justify-center z-10 flex-shrink-0" style="background:#F8FAFC; border: 1.5px solid #E2E8F0;"><div class="w-2 h-2 rounded-full bg-[#CBD5E1]"></div></div>
+                      <div class="w-0.5 flex-1 bg-[#E2E8F0] min-h-4"></div>
+                    </div>
+                    <div class="flex-1 py-2"><p class="text-[9px] font-semibold uppercase tracking-widest text-[#94A3B8] mb-0.5">Upcoming</p><p class="text-[12px] font-semibold">Director approval</p><p class="text-[11px] text-[#94A3B8]">Olivia Bennett</p></div>
+                  </div>
+                  <div class="flex items-stretch px-4">
+                    <div class="w-12 flex flex-col items-center flex-shrink-0 pt-1">
+                      <div class="w-0.5 h-2 bg-[#E2E8F0]"></div>
+                      <div class="w-7 h-7 rounded-full flex items-center justify-center z-10 flex-shrink-0" style="background:#F8FAFC; border: 1.5px solid #E2E8F0;"><div class="w-2 h-2 rounded-full bg-[#CBD5E1]"></div></div>
+                    </div>
+                    <div class="flex-1 py-2 pb-4"><p class="text-[9px] font-semibold uppercase tracking-widest text-[#94A3B8] mb-0.5">Final step</p><p class="text-[12px] font-semibold">Request fully approved</p><p class="text-[11px] text-[#94A3B8]">All approvers signed off</p></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activity -->
+              <div class="rounded-xl border border-[#E2E8F0] overflow-hidden fade-3">
+                <div class="flex border-b border-[#F1F5F9]">
+                  <button onclick="setTab(this)" class="tab-btn flex-1 text-[12px] font-semibold px-4 py-3 text-[#0F172A] border-b-2 border-[#2563EB] -mb-px cursor-pointer">Activity</button>
+                  <button onclick="setTab(this)" class="tab-btn flex-1 text-[12px] font-medium px-4 py-3 text-[#94A3B8] border-b-2 border-transparent -mb-px hover:text-[#0F172A] transition-colors cursor-pointer">Comments</button>
+                </div>
+                <div class="p-4 flex gap-2.5 items-start">
+                  <div class="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5" style="background:#EDE9FE; color:#6D28D9;">AG</div>
+                  <textarea class="flex-1 text-[12px] px-3 py-2 border border-[#E2E8F0] rounded-lg bg-white placeholder-[#94A3B8] resize-none outline-none transition-colors min-h-[36px] focus:border-[#2563EB]" placeholder="Add a comment or note…" rows="2" style="font-family:'Inter',sans-serif;"></textarea>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-4 text-white text-[13px] font-medium px-5 py-2.5 rounded-xl opacity-0 transition-all duration-200 pointer-events-none whitespace-nowrap z-[999]" style="background:#0F172A;"></div>
+
+<script>
+  function goToDetail() {
+    document.getElementById('s-overview').classList.remove('active');
+    document.getElementById('s-detail').classList.add('active');
+    window.scrollTo(0,0);
+    setTimeout(() => { document.getElementById('bar').style.width = '20%'; }, 400);
+  }
+
+  function goToOverview() {
+    document.getElementById('s-detail').classList.remove('active');
+    document.getElementById('s-overview').classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  function handleApprove() {
+    const zone = document.getElementById('action-zone');
+    zone.style.background = '#F0FDF4';
+    zone.style.border = '1px solid #BBF7D0';
+    zone.innerHTML = '<p class="text-[9px] font-semibold uppercase tracking-widest text-green-700 mb-1.5">Step approved</p><p class="text-[12px] text-green-800 leading-relaxed">Approved by <strong class="font-semibold">Emily Carter</strong>. Request is now advancing to Jason Brooks for finance approval.</p>';
+    const icon = document.getElementById('active-icon');
+    icon.className = 'w-7 h-7 rounded-full flex items-center justify-center z-10 flex-shrink-0';
+    icon.style.background = '#DCFCE7';
+    icon.style.border = '1.5px solid #22C55E';
+    icon.innerHTML = '<svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>';
+    document.getElementById('active-state').textContent = 'Completed';
+    document.getElementById('active-state').className = 'text-[9px] font-semibold uppercase tracking-widest text-green-600 mb-0.5';
+    document.getElementById('bar').style.width = '40%';
+    document.getElementById('pct').textContent = '40%';
+    document.getElementById('panel-meta').textContent = '2 / 5 completed';
+    document.getElementById('urgency-badge').style.display = 'none';
+    toast('Step approved — request advanced to Jason Brooks');
+  }
+
+  function setTab(el) {
+    document.querySelectorAll('.tab-btn').forEach(t => {
+      t.className = 'tab-btn flex-1 text-[12px] font-medium px-4 py-3 text-[#94A3B8] border-b-2 border-transparent -mb-px hover:text-[#0F172A] transition-colors cursor-pointer';
+    });
+    el.className = 'tab-btn flex-1 text-[12px] font-semibold px-4 py-3 text-[#0F172A] border-b-2 -mb-px cursor-pointer';
+    el.style.borderColor = '#2563EB';
+  }
+
+  function toast(msg, dur=2800) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.style.opacity = '1';
+    el.style.transform = 'translateX(-50%) translateY(0)';
+    setTimeout(() => { el.style.opacity='0'; el.style.transform='translateX(-50%) translateY(8px)'; }, dur);
+  }
+</script>
+</body>
+</html>
